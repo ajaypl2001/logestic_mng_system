@@ -17,6 +17,7 @@ use App\Models\Charge;
 use App\Models\ShipperDetail;
 use App\Models\ConsigneeDetail;
 use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SqlActionController extends Controller
 {
@@ -974,5 +975,16 @@ class SqlActionController extends Controller
         }
 
         return redirect()->route('load-creation')->with('success', 'Load Creation Updated successfully!');
+    }
+
+
+
+    public function generatePdf()
+    {
+        $pdf = Pdf::loadView('pdf.signed_ratecon_pdf');
+
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream('signed_ratecon.pdf');
     }
 }

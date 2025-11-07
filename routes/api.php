@@ -11,3 +11,5 @@ Route::get('/user', function (Request $request) {
 Route::get('/dummy', function(){
     return response()->json(['message' => 'hye pagal']);
 });
+
+

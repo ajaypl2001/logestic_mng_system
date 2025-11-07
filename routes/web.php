@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SqlActionController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 
 Route::get('/login/form', [AuthController::class, 'showLoginForm'])->name('login');
@@ -21,6 +22,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/AddLoadCustomer', 'AddLoadCustomer_form')->name('AddLoadCustomer');
         Route::post('/AddLoadCustomer_query', 'AddLoadCustomer_query')->name('AddLoadCustomer_query');
         Route::post('/update_customer', 'update_customer')->name('update_customer');
+        Route::get('/signed-ratecon-pdf', 'generatePdf')->name('generatePdf');
     });
 
     Route::prefix('shipper')->controller(SqlActionController::class)->group(function () {
@@ -64,6 +66,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit_load_creation/edit_load/{id}', 'edit_load_creation')->name('edit_load_creation');
         Route::post('/update-load-status', 'updateStatus')->name('load_updateStatus');
         Route::post('/update_load_query', 'update_load_query')->name('update_load_query');
+    });
+
+    Route::prefix('users')->controller(UserController::class)->group(function () {
+        Route::get('/', 'users_list')->name('users_list');
+        Route::get('/add_user', 'add_user')->name('add_user');
+        Route::get('/edit_user/{id}', 'edit_user')->name('edit_user');
+        Route::post('/add_user_query', 'add_user_query')->name('add_user_query');
+        Route::post('/update_user_query', 'update_user_query')->name('update_user_query');
+        Route::post('/change_password', 'change_password')->name('change_password');
     });
 
     Route::get('/states', [SqlActionController::class, 'getStates'])->name('states.get');

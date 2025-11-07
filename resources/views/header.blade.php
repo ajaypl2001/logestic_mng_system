@@ -91,13 +91,13 @@
         <div class="main-nav">
              <!-- Sidebar Logo -->
              <div class="logo-box">
-                  <a href="index.php" class="logo-dark">
+                  <a href="{{ route('dashbord')}}" class="logo-dark">
                        <img src="{{ asset('images/logo-sm.png')}}" class="logo-sm" alt="logo sm">
-<img src="{{ asset('images/logo-dark.png')}}" class="logo-lg" alt="logo dark">
+                      <img src="{{ asset('images/logo-dark.png')}}" class="logo-lg" alt="logo dark">
 
                   </a>
 
-                  <a href="index.php" class="logo-light">
+                  <a href="{{ route('dashbord')}}" class="logo-light">
                        <img src="{{ asset('images/logo-sm.png')}}" class="logo-sm" alt="logo sm">
                        <img src="{{ asset('images/logo-light.png')}}" class="logo-lg" alt="logo light">
                   </a>
@@ -122,6 +122,21 @@
                             </a>
                        </li>
 
+                       <li class="nav-item">
+                         <a class="nav-link menu-arrow" href="#sidebarAdmin" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAdmin">
+                              <span class="nav-icon">
+                                   <iconify-icon icon="mdi:account-cog-outline"></iconify-icon>
+                              </span>
+                              <span class="nav-text"> Administrator </span>
+                         </a>
+                         <div class="collapse" id="sidebarAdmin">
+                              <ul class="nav sub-navbar-nav">
+                                   <li class="sub-nav-item">
+                                        <a class="sub-nav-link" href="{{ route('users_list')}}">User</a>
+                                   </li>
+                              </ul>
+                         </div>
+                        </li>
 
                         <li class="nav-item">
                             <a class="nav-link menu-arrow" href="#sidebarDispatch" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDispatch">
@@ -154,7 +169,6 @@
                                  </ul>
                             </div>
                        </li>
-
                   </ul>
              </div>
         </div>
