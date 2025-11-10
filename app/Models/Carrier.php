@@ -10,6 +10,7 @@ class Carrier extends Model
     public $timestamps = true; 
 
     protected $fillable = [
+        'user_id',
         'carrier_name',
         'mc_ff',
         'mc_ff_hidden',

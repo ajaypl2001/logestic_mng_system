@@ -25,15 +25,26 @@
                     <div class="col-xl-12">
 
                           <div class="card">
-                                  <div class="card-header">  
+                                <div class="card-header">  
                                   <div class="d-flex flex-wrap justify-content-between gap-3">     
                                     <h4 class="card-title d-flex align-items-center gap-1" id="hidden_column">Users Listing</h4>
-                                    <a href="{{ route('add_user')}}" class="btn btn-primary"><i class="bx bx-plus me-1"></i>Add User</a>
+                                     <div class="d-flex gap-2">
+                                            <a href="{{ route('export_users')}}" class="btn btn-success btn-sm d-flex align-items-center gap-1">
+                                                <iconify-icon icon="vscode-icons:file-type-excel" class="fs-5"></iconify-icon>
+                                                <span>Excel</span>
+                                                <iconify-icon icon="solar:download-linear" class="fs-5"></iconify-icon>
+                                            </a>
+                                            <a href="{{ route('add_user') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1">
+                                                <i class="bx bx-plus fs-5"></i>
+                                                <span>Add User</span>
+                                            </a>
+                                        </div>
+                                  </div>
                                 </div>
-                            </div>
                             <div class="card-body">
                          
                                            <div class="table-responsive">
+                                            
                                              <table id="customerTable" class="table table-hover table-centered align-middle mb-0">
                                                 <thead class="table-dark">
                                                     <tr>
@@ -81,8 +92,8 @@
                                                         </td>
                                                         <td>
                                                             <div class="d-flex gap-2">
-                                                                <a href="{{ route('edit_user', $user->id) }}" class="btn btn-soft-primary btn-sm">
-                                                                    <iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon>
+                                                               <a href="{{ route('edit_user', base64_encode($user->id)) }}" class="btn btn-soft-primary btn-sm">
+                                                                 <iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon>
                                                                 </a>
                                                             </div>
                                                         </td>
@@ -93,7 +104,6 @@
                                         </div>
                             </div>
                         </div>
-
                     </div>
                         
                 </div> <!-- end row -->

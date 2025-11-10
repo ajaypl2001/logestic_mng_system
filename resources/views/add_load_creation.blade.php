@@ -30,6 +30,7 @@
                            <div class="row">
                               <div class="col-md-12">
                                  <div class="row">
+                                    <input type="hidden" name="user_id" value="{{ Auth::user()->id}}">
                                     <div class="col-md-3">
                                        <div class="form-group mb-3">
                                           <label class="control-label mb-1">Load Number</label>
@@ -536,6 +537,7 @@
                                  </div>
                                  <div class="form_bbtns text-end" id="divallbtn">
                                     <input type="hidden" id="load_creation_id" name="load_creation_id" class="form-control" value="{{ $isEdit ? $load->id : '' }}"/>
+                                   
                                      @if (empty($load->id))
                                       <button id="btnSubmit" type="submit" class="btn btn-success commonBtn" >Submit</button>
                                        @else

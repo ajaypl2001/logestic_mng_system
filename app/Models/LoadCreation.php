@@ -12,6 +12,7 @@ class LoadCreation extends Model
 
     protected $fillable = [
         'customer_id',
+        'user_id',
         'search_terms',
         'dispatcher',
         'load_status',

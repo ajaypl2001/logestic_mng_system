@@ -14,6 +14,7 @@ class Mc extends Model
 
     protected $fillable = [
         'mc_no',
+        'user_id',
         'carrier_name',
         'commodity_type',
         'commodity_value',

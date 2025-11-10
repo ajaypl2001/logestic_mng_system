@@ -32,7 +32,7 @@ class Consignee extends Model
         'as_shipper',
         'status_ind',
         'notes',
-        'created_by',
+        'user_id',
         'internal_notes',
         'acc_sts'
     ];

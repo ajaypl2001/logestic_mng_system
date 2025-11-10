@@ -78,6 +78,7 @@
                               </div>
                               <div class="col-md-12 text-end">
                                  <input type="hidden" name="mc_id" value="{{ $isEdit ? $Mc_data->id : '' }}">
+                                 <input type="hidden" name="user_id" value="{{ Auth::user()->id}}">
                                  @if (!empty($Mc_data->id))
                                     <button type="submit" class="btn btn-success commonBtn">Update</button>
                                  @else

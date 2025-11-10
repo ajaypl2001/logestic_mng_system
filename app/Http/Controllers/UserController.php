@@ -7,6 +7,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class UserController extends Controller
 {
     public function users_list()
@@ -28,6 +31,8 @@ class UserController extends Controller
     {
         $data = $request->all();
 
+        $data['f_name'] = $request->f_name;
+        $data['l_name'] = $request->l_name;
         $data['name'] = $request->f_name . ' ' . $request->l_name;
         $data['org_password'] = $request->password;
         $data['password'] = Hash::make($request->password); 
@@ -39,7 +44,8 @@ class UserController extends Controller
     }
 
     public function edit_user($id){
-        $user = User::where('status', 'Active')->where('userrole', '!=', 'Admin')->where('id', $id)->first();
+        $user_id = base64_decode($id);
+        $user = User::where('status', 'Active')->where('userrole', '!=', 'Admin')->where('id', $user_id)->first();
         $team_lead = User::where('status', 'Active')->where('userrole', 'Team Lead')->get();
         $team_mang = User::where('status', 'Active')->where('userrole', 'Manager')->get();
 
@@ -73,29 +79,43 @@ class UserController extends Controller
 
 
     public function change_password(Request $request)
-{
-    $request->validate([
-        'user_id' => 'required|integer',
-        'old_password' => 'required',
-        'new_password' => 'required|min:6',
-        'confirm_password' => 'required|same:new_password',
-    ]);
+    {
+        $request->validate([
+            'user_id' => 'required|integer',
+            'old_password' => 'required',
+            'new_password' => 'required|min:6',
+            'confirm_password' => 'required|same:new_password',
+        ]);
 
-    $user = User::findOrFail($request->user_id);
+        $user = User::findOrFail($request->user_id);
 
-    if (!Hash::check($request->old_password, $user->password)) {
-        return redirect()
-            ->route('edit_user', $request->user_id)
-            ->with('error', 'Old password does not match!');
+        if ($request->old_password != $user->org_password) {
+            return redirect()->route('edit_user', base64_encode($request->user_id))->with('error', 'Old password does not match!');
+        }
+
+        $user->org_password = Hash::make($request->new_password);
+        $user->org_password = $request->new_password;
+        $user->save();
+
+        return redirect()->route('edit_user', base64_encode($request->user_id))->with('success', 'Password updated successfully!');
     }
 
-    $user->password = Hash::make($request->new_password);
-    $user->org_password = $request->new_password;
-    $user->save();
 
-    return redirect()
-        ->route('edit_user', $request->user_id)
-        ->with('success', 'Password updated successfully!');
-}
+    public function checkEmailDuplicate(Request $request)
+    {
+        $query = User::where('email', $request->email);
+        if ($request->user_id) {
+            $query->where('id', '!=', $request->user_id);
+        }
+
+        $exists = $query->exists();
+
+        return response()->json(['exists' => $exists]);
+    }
+
+    public function exportUsers()
+    {
+        return Excel::download(new UsersExport, 'users.xls');
+    }
 
 }

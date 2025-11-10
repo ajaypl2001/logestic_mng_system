@@ -45,7 +45,8 @@
                                             <option value="">Select Role</option>
                                             <option value="Team Lead" {{ isset($user) && $user->userrole == 'Team Lead' ? 'selected' : '' }}>Team Lead</option>
                                             <option value="Manager" {{ isset($user) && $user->userrole == 'Manager' ? 'selected' : '' }}>Manager</option>
-                                            <option value="Admin" {{ isset($user) && $user->userrole == 'Admin' ? 'selected' : '' }}>Admin</option>
+                                            <option value="Sales Representative" {{ isset($user) && $user->userrole == 'Sales Representative' ? 'selected' : '' }}>Sales Representative</option>
+                                            <option value="Opreations" {{ isset($user) && $user->userrole == 'Opreations' ? 'selected' : '' }}>Opreations</option>
                                         </select>
                                     </div>
                                 </div>
@@ -103,6 +104,7 @@
                                     <div class="form-group mb-3">
                                         <label class="control-label mb-1">Phone <span class="text-danger">*</span></label>
                                         <input placeholder="XXX-XXX-XXXX" class="form-control" id="phone" name="phone" type="text" value="{{ old('f_name', $user->phone ?? '') }}" required />
+                                        <small id="phone-error" class="text-danger"></small>
                                     </div>
                                 </div>
 
@@ -116,7 +118,8 @@
                                 <div class="col-md-4">
                                     <div class="form-group mb-3">
                                         <label class="control-label mb-1">Email <span class="text-danger">*</span></label>
-                                        <input placeholder="Enter Email Address" class="form-control" id="email" name="email" type="email" value="{{ old('f_name', $user->email ?? '') }}" required />
+                                        <input placeholder="Enter Email Address" class="form-control" id="email" name="email" type="email" value="{{ old('email', $user->email ?? '') }}" required />
+                                        <small id="email-error" class="text-danger"></small>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -131,7 +134,6 @@
                                             <input placeholder="Enter Password" class="form-control" id="password" name="password" type="password" required />
                                         @endif
                                     </div>
-                                    {{-- {{ route('change_password', $user->id) }} --}}
                                 </div>
 
                                 <div class="col-md-4">
@@ -151,6 +153,7 @@
                                         <select class="form-control" id="usergroup" name="usergroup" required>
                                             <option value="">Select User Group</option>
                                             <option value="Sales Representative" {{ isset($user) && $user->usergroup == 'Sales Representative' ? 'selected' : '' }}>Sales Representative</option>
+                                            <option value="Opreations" {{ isset($user) && $user->usergroup == 'Opreations' ? 'selected' : '' }}>Opreations</option>
                                         </select>
                                     </div>
                                 </div>
@@ -171,19 +174,23 @@
                                                     : [];
                                             @endphp
 
-                                            @foreach($permissions as $perm)
-                                                <div class="col-md-6 col-sm-6">
-                                                    <div class="form-check mb-2">
-                                                        <input class="form-check-input"
-                                                            type="checkbox"
-                                                            name="form_permission[]"
-                                                            value="{{ $perm }}"
-                                                            id="perm_{{ Str::slug($perm, '_') }}"
-                                                            {{ in_array($perm, $userPermissions) ? 'checked' : '' }}>
-                                                        <label class="form-check-label" for="perm_{{ Str::slug($perm, '_') }}">{{ $perm }}</label>
+                                            @if(!empty($permissions))
+                                                @foreach($permissions as $perm)
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <div class="form-check mb-2">
+                                                            <input class="form-check-input"
+                                                                type="checkbox"
+                                                                name="form_permission[]"
+                                                                value="{{ $perm }}"
+                                                                id="perm_{{ Str::slug($perm, '_') }}"
+                                                                {{ in_array($perm, $userPermissions ?? []) ? 'checked' : '' }}>
+                                                            <label class="form-check-label" for="perm_{{ Str::slug($perm, '_') }}">{{ $perm }}</label>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            @endforeach
+                                                @endforeach
+                                            @else
+                                                <p class="text-muted">No permissions available.</p>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -302,5 +309,105 @@
         });
     }, 2000);
 </script>
+    <script>
+    $(document).ready(function () {
+        $("#phone").on("input blur", function () {
+            validatePhone();
+        });
+
+        $("#AdduserForm").on("submit", function (e) {
+            if (!validatePhone()) {
+                e.preventDefault();
+            }
+        });
+
+        function validatePhone() {
+            let phone = $("#phone").val().trim();
+            let errorField = $("#phone-error");
+            let phoneRegex = /^[0-9]{10}$/;
+            let isValid = true;
+
+            errorField.text("");
+
+            if (!/^\d*$/.test(phone)) {
+                errorField.text("Only numbers are allowed.");
+                isValid = false;
+            } 
+            else if (!phoneRegex.test(phone)) {
+                errorField.text("Phone number must be exactly 10 digits.");
+                isValid = false;
+            }
+            return isValid;
+        }
+    });
+    </script>
+
+    <script>
+$(document).ready(function () {
+
+    $("#email").on("blur", function () {
+        validateEmail();
+    });
+
+    $("#AdduserForm").on("submit", function (e) {
+        e.preventDefault(); // stop submission first
+
+        validateEmail(function(isValid) {
+            if (isValid) {
+                // submit only if email is valid
+                $("#AdduserForm")[0].submit();
+            }
+        });
+    });
+
+    function validateEmail(callback) {
+        let email = $("#email").val().trim();
+        let errorField = $("#email-error");
+        let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        errorField.text("");
+
+        if (email === "") {
+            errorField.text("Email is required.");
+            if (callback) callback(false);
+            return false;
+        }
+
+        if (!emailRegex.test(email)) {
+            errorField.text("Enter a valid email address.");
+            if (callback) callback(false);
+            return false;
+        }
+
+        // AJAX check
+        $.ajax({
+            url: "{{ route('check_email_duplicate') }}",
+            method: "POST",
+            data: {
+                email: email,
+                _token: "{{ csrf_token() }}",
+                user_id: "{{ $user->id ?? '' }}"
+            },
+            success: function (response) {
+                if (response.exists) {
+                    errorField.text("This email is already registered.");
+                    if (callback) callback(false);
+                } else {
+                    errorField.text("");
+                    if (callback) callback(true);
+                }
+            },
+            error: function () {
+                errorField.text("Error checking email. Try again.");
+                if (callback) callback(false);
+            }
+        });
+    }
+
+});
+</script>
+
+
+
 
   

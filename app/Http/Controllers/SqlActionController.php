@@ -18,6 +18,10 @@ use App\Models\ShipperDetail;
 use App\Models\ConsigneeDetail;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
+
+use App\Exports\CustomerExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SqlActionController extends Controller
 {
@@ -64,8 +68,13 @@ class SqlActionController extends Controller
 
     public function shipper_get_data()
     {
-        $shipers = Shipper::with('country')->where('acc_sts', 1)->orderBy('id', 'ASC')->get();
+        $query = Shipper::with('country')->where('acc_sts', 1)->orderBy('id', 'ASC');
 
+        if (Auth::user()->userrole != 'Admin' && Auth::user()->userrole != 'Operations') {
+            $query->where('user_id', Auth::user()->id);
+        }
+
+        $shipers = $query->get();
 
         return view('shipper',  compact('shipers'));
     }
@@ -73,14 +82,27 @@ class SqlActionController extends Controller
 
     public function consignee_get_data()
     {
-        $Consignees = Consignee::with('country')->where('acc_sts', 1)->orderBy('id', 'ASC')->get();
+        $query = Consignee::with('country')->where('acc_sts', 1)->orderBy('id', 'ASC');
+
+        if (Auth::user()->userrole != 'Admin' && Auth::user()->userrole != 'Operations') {
+            $query->where('user_id', Auth::user()->id);
+        }
+
+        $Consignees = $query->get();
 
         return view('consignee',  compact('Consignees'));
     }
 
     public function customer_get_data()
     {
-        $Customers = Customer::with('country')->orderBy('id', 'ASC')->get();
+        $query = Customer::with('country')->orderBy('id', 'ASC');
+
+        if (Auth::user()->userrole != 'Admin' && Auth::user()->userrole != 'Operations') {
+            $query->where('user_id', Auth::user()->id);
+        }
+
+        $Customers = $query->get();
+
         return view('customer',  compact('Customers'));
     }
     //-------------- Add Shipper ---------------------
@@ -110,7 +132,7 @@ class SqlActionController extends Controller
             'internal_notes' => $request->internal_notes,
             'as_consignee' => $request->as_consignee,
             'acc_sts' => 1,
-            'created_by' => 1,
+            'user_id' => $request->user_id,
         ];
 
         Shipper::create($data);
@@ -177,7 +199,7 @@ class SqlActionController extends Controller
             'notes' => $request->shipping_notes,
             'internal_notes' => $request->internal_notes,
             'status_ind' => 1,
-            'created_by' => 1,
+            'user_id' => $request->user_id,
         ];
 
         $updated = Shipper::where('id', $request->shipper_id)->update($data);
@@ -216,7 +238,7 @@ class SqlActionController extends Controller
             'internal_notes' => $request->InternalNotes,
             'as_shipper' => $request->as_shipper,
             'acc_sts' => 1,
-            'created_by' =>  1,
+            'user_id' =>  $request->user_id,
         ];
 
 
@@ -250,7 +272,7 @@ class SqlActionController extends Controller
             'notes' => $request->Notes,
             'internal_notes' => $request->InternalNotes,
             'status_ind' => 1,
-            'created_by' => 1,
+            'user_id' => $request->user_id,
         ];
 
         $updated = Consignee::where('id', $request->consignee_id)->update($data);
@@ -264,6 +286,7 @@ class SqlActionController extends Controller
 
     public function AddLoadCustomer_query(Request $request)
     {
+        // dd($request->all());
         $data = [
             'customer_name' => $request->customer_name,
             'mc_ff' => $request->mc_ff,
@@ -315,11 +338,11 @@ class SqlActionController extends Controller
             'rate_type' => $request->rate_type,
             'fsc_type' => $request->fsc_type,
             'fsc_rate' => $request->fsc_rate,
-            'created_by' => 1,
-            'created_name' => 'admin',
+            'created_name' => '',
             'created_date' => now()->toDateString(),
             'created_datetime' => now(),
             'last_update_date' => now()->toDateString(),
+            'user_id' => $request->user_id
         ];
 
         $customer = Customer::create($data);
@@ -382,8 +405,8 @@ class SqlActionController extends Controller
             'rate_type' => $request->rate_type,
             'fsc_type' => $request->fsc_type,
             'fsc_rate' => $request->fsc_rate,
-            'created_by' => 1,
-            'created_name' => 'admin',
+            'user_id' => $request->user_id,
+            'created_name' => '',
             'created_date' => now()->toDateString(),
             'created_datetime' => now(),
             'last_update_date' => now()->toDateString(),
@@ -396,7 +419,15 @@ class SqlActionController extends Controller
 
     public function mc_get_data()
     {
-        $mc_data = Mc::get();
+
+        $query = Mc::orderBy('id', 'ASC');
+
+        if (Auth::user()->userrole != 'Admin' && Auth::user()->userrole != 'Operations') {
+            $query->where('user_id', Auth::user()->id);
+        }
+
+        $mc_data = $query->get();
+
         return view('mc-check', compact('mc_data'));
     }
 
@@ -418,6 +449,7 @@ class SqlActionController extends Controller
 
         $mc_data = [
             'mc_no'           => $request->mc_no,
+            'user_id'           => $request->user_id,
             'carrier_name'    => $request->carrier_name,
             'commodity_type'  => $request->commodity_type,
             'commodity_value' => $request->commodity_value,
@@ -458,6 +490,7 @@ class SqlActionController extends Controller
 
         $mc_data = [
             'mc_no'           => $request->mc_no,
+            'user_id'           => $request->user_id,
             'carrier_name'    => $request->carrier_name,
             'commodity_type'  => $request->commodity_type,
             'commodity_value' => $request->commodity_value,
@@ -474,7 +507,13 @@ class SqlActionController extends Controller
 
     public function external_carrier()
     {
-        $carrier_data = Carrier::with('fleetDetails')->get();
+        $query = Carrier::with('fleetDetails')->orderBy('id', 'ASC');
+
+        if (Auth::user()->userrole != 'Admin' && Auth::user()->userrole != 'Operations') {
+            $query->where('user_id', Auth::user()->id);
+        }
+
+        $carrier_data = $query->get();
         return view('external-carrier', compact('carrier_data'));
     }
 
@@ -495,6 +534,7 @@ class SqlActionController extends Controller
     {
         $carrierData = $request->only([
             'carrier_name',
+            'user_id',
             'mc_ff',
             'mc_ff_hidden',
             'dot',
@@ -604,6 +644,7 @@ class SqlActionController extends Controller
     {
         $carrierData = $request->only([
             'carrier_name',
+            'user_id',
             'mc_ff',
             'mc_ff_hidden',
             'dot',
@@ -701,14 +742,20 @@ class SqlActionController extends Controller
 
     public function load_creation()
     {
-        $loads = LoadCreation::with(['charges', 'shippers', 'consignees', 'customer'])->get();
+        $query = LoadCreation::with(['charges', 'shippers', 'consignees', 'customer'])->orderBy('id', 'ASC');
+
+        if (Auth::user()->userrole != 'Admin' && Auth::user()->userrole != 'Operations') {
+            $query->where('user_id', Auth::user()->id);
+        }
+
+        $loads = $query->get();
         return view('load-creation', compact('loads'));
     }
 
 
     public function add_load_creation()
     {
-        $countries = Country::where('cou_sts', 'active')->orderBy('countries_name', 'ASC')->get(['id', 'countries_name','countries_iso_code']);
+        $countries = Country::where('cou_sts', 'active')->orderBy('countries_name', 'ASC')->get(['id', 'countries_name', 'countries_iso_code']);
         $customers = Customer::all();
         $shippers = Shipper::all();
         $consignees = Consignee::all();
@@ -721,6 +768,7 @@ class SqlActionController extends Controller
     {
         $load_Data = $request->only([
             'customer_id',
+            'user_id',
             'search_terms',
             'dispatcher',
             'load_status',
@@ -825,7 +873,7 @@ class SqlActionController extends Controller
                 'amount' => $charge->amount,
             ];
         });
-    
+
         $chargesJson = $chargesArray->toJson();
         $totalAmount = $chargesArray->sum('amount');
 
@@ -888,9 +936,11 @@ class SqlActionController extends Controller
     }
 
 
-    public function update_load_query(Request $request){
+    public function update_load_query(Request $request)
+    {
         $load_Data = $request->only([
             'customer_id',
+            'user_id',
             'search_terms',
             'dispatcher',
             'load_status',
@@ -914,7 +964,7 @@ class SqlActionController extends Controller
         ]);
 
         $load = LoadCreation::findOrFail($request->load_creation_id);
-        $load->update($load_Data); 
+        $load->update($load_Data);
 
         Charge::where('creation_id', $load->id)->delete();
         $otherCharges = json_decode($request->input('other_charge_id'), true);
@@ -986,5 +1036,11 @@ class SqlActionController extends Controller
         $pdf->setPaper('A4', 'portrait');
 
         return $pdf->stream('signed_ratecon.pdf');
+    }
+
+
+    public function exportCustomers()
+    {
+        return Excel::download(new CustomerExport, 'customers.xlsx');
     }
 }

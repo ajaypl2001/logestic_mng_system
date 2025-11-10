@@ -122,6 +122,17 @@
                             </a>
                        </li>
 
+                       {{-- <li class="nav-item">
+                            <a class="nav-link" href="{{ route('dashbord')}}">
+                                 <span class="nav-icon">
+                                      <iconify-icon icon="solar:widget-5-bold-duotone"></iconify-icon>
+                                 </span>
+                                 <span class="nav-text"> My Dashboard </span>
+                            </a>
+                       </li> --}}
+
+                       @if (Auth::user()->userrole == 'Admin' || Auth::user()->userrole == 'Operations')
+                            
                        <li class="nav-item">
                          <a class="nav-link menu-arrow" href="#sidebarAdmin" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAdmin">
                               <span class="nav-icon">
@@ -136,7 +147,8 @@
                                    </li>
                               </ul>
                          </div>
-                        </li>
+                       </li>
+                       @endif
 
                         <li class="nav-item">
                             <a class="nav-link menu-arrow" href="#sidebarDispatch" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDispatch">

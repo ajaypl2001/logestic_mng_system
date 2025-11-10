@@ -61,4 +61,17 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+    public function teamLead()
+    {
+        return $this->belongsTo(User::class, 'lead_id');
+    }
+
+    public function teamManager()
+    {
+        return $this->belongsTo(User::class, 'mang_id');
+    }
+
+   
 }

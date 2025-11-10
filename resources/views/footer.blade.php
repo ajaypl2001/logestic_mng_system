@@ -38,6 +38,12 @@
     <!-- DataTables JS -->
     <script src="{{ asset('js/jquery.dataTables.min.js')}}"></script>
 
+    <!-- jQuery (optional, but if used, load first) -->
+
+<!-- Bootstrap Bundle (includes Popper.js) -->
+
+
+
 
 <script>
   // Initialize Datepicker

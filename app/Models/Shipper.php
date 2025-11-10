@@ -34,7 +34,7 @@ class Shipper extends Model
         'internal_notes',
         'as_consignee',
         'acc_sts',
-        'created_by',
+        'user_id',
         'updated_at',
         'created_at'
     ];

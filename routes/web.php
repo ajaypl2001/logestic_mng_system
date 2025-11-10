@@ -23,6 +23,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/AddLoadCustomer_query', 'AddLoadCustomer_query')->name('AddLoadCustomer_query');
         Route::post('/update_customer', 'update_customer')->name('update_customer');
         Route::get('/signed-ratecon-pdf', 'generatePdf')->name('generatePdf');
+        Route::put('/customer/update-status/{id}', 'updateStatus')->name('customer_updateStatus');
+        Route::get('export_customers', 'export_customers')->name('export_customers');
+    
     });
 
     Route::prefix('shipper')->controller(SqlActionController::class)->group(function () {
@@ -75,6 +78,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/add_user_query', 'add_user_query')->name('add_user_query');
         Route::post('/update_user_query', 'update_user_query')->name('update_user_query');
         Route::post('/change_password', 'change_password')->name('change_password');
+        Route::post('/check-email-duplicate', 'checkEmailDuplicate')->name('check_email_duplicate');
+        Route::get('/export-users', 'exportUsers')->name('export_users');
     });
 
     Route::get('/states', [SqlActionController::class, 'getStates'])->name('states.get');

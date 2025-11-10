@@ -165,11 +165,7 @@
                               <div class="col-md-4">
                                  <div class="form-group text-center mb-3">
                                     <label class="form-label d-block mb-2 text-start">Add As Consignee</label>
-                                    <input class="form-check-input" 
-                                       id="as_consignee" 
-                                       name="as_consignee" 
-                                       type="checkbox" 
-                                       value="Yes"
+                                    <input class="form-check-input" id="as_consignee" name="as_consignee" type="checkbox" value="Yes"
                                        {{ ($isEdit && $shipper->as_consignee == 'Yes') ? 'checked' : '' }}>
                                  </div>
                               </div>
@@ -199,6 +195,7 @@
 
                            <div class="col-md-12 text-end">
                               <input type="hidden" name="shipper_id" value="{{ $isEdit ? $shipper->id : '' }}">
+                              <input type="hidden" name="user_id" value="{{ Auth::user()->id}}">
                                @if (!empty($shipper->id))
                                     <button type="submit" class="btn btn-success  commonBtn"> Update </button>
                                  @else

@@ -671,6 +671,7 @@
                                        </div>
                                        <div class="form_bbtns text-end">
                                           <input type="hidden" name="carrier_id" value="{{ $isEdit ? $carrier_data->id : '' }}">
+                                          <input type="hidden" name="user_id" value="{{ Auth::user()->id}}">
                                           @if (!empty($carrier_data->id))
                                           <button id="btnSubmit" type="submit" class="btn btn-success commonBtn">Update</button>
                                           @else
