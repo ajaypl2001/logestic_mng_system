@@ -21,5 +21,10 @@ class Mc extends Model
         'equ_type',
         'com_value_prf',
         'created_datetime',
+        'approve_sts'
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

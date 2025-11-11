@@ -1,4 +1,5 @@
 @include('header')
+
 <div class="page-content">
 <div class="container-fluid">
    @if(session('success'))
@@ -61,7 +62,7 @@
                                  <td>{{ $Customer->customer_name }}</td>
                                  <td>{{ $Customer->address }}</td>
                                  <td>{{ $Customer->city }}</td>
-                                 <td>{{ $Customer->state }}</td>
+                                 <td>{{ $Customer->stateInfo->state}}</td>
                                  <td>{{ $Customer->zip_code }}</td>
                                  <td>{{ $Customer->telephone }}</td>
                                  <td>
@@ -90,7 +91,36 @@
                                              {{ $Customer->approve_sts ?? 'Pending' }}
                                        </span>
                                     @endif
-                                 </td>                          
+                                 </td>   
+                                  <!-- Modal -->
+                                 <div class="modal fade" id="statusModal{{ $Customer->id ?? ''}}" tabindex="-1" aria-labelledby="statusModalLabel{{ $Customer->id ?? ''}}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                       <div class="modal-content">
+                                             <form action="{{ route('cus_approval_query')}}" method="POST">
+                                                @csrf
+                                                <div class="modal-header">
+                                                   <h5 class="modal-title" id="statusModalLabel{{ $Customer->id ?? ''}}">Update Status</h5>
+                                                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <input type="hidden" name="customer_update_id" value="{{ $Customer->id ?? '' }}">
+                                                <div class="modal-body">
+                                                   <div class="mb-3">
+                                                         <label for="status" class="form-label">Select Status</label>
+                                                         <select name="approval_sts" id="status" class="form-select" required>
+                                                            <option value="">Choose Status</option>
+                                                            <option value="Approved" {{ $Customer->approve_sts == 'Approved' ? 'selected' : '' }}>Approved</option>
+                                                            <option value="Not Approved" {{ $Customer->approve_sts == 'Not Approved' ? 'selected' : '' }}>Not Approved</option>
+                                                         </select>
+                                                   </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                   <button type="submit" class="btn btn-success">Save</button>
+                                                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                             </form>
+                                       </div>
+                                    </div>
+                                 </div>                       
                                  <td>{{ $Customer->created_at ? $Customer->created_at->format('Y-m-d') : 'N/A' }}</td>
                                  <td>{{ $Customer->user ? $Customer->user->name : 'N/A' }}</td>
                                  <td>{{ $Customer->user && $Customer->user->teamLead ? $Customer->user->teamLead->name : 'N/A' }}</td>
@@ -114,39 +144,12 @@
          </div>
       </div>
    </div>
+  
 </div>
-<!-- Modal -->
-    <div class="modal fade" id="statusModal{{ $Customer->id }}" tabindex="-1" aria-labelledby="statusModalLabel{{ $Customer->id }}" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="{{ route('customer_updateStatus', $Customer->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="modal-header">
-                    <h5 class="modal-title" id="statusModalLabel{{ $Customer->id }}">Update Status</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="status" class="form-label">Select Status</label>
-                        <select name="status" id="status" class="form-select" required>
-                            <option value="Approved" {{ $Customer->status == 'Approved' ? 'selected' : '' }}>Approved</option>
-                            <option value="Not Approved" {{ $Customer->status == 'Not Approved' ? 'selected' : '' }}>Not Approved</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">Save</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+
 
 @include('footer')
 <script>
-
     setTimeout(function() {
         var flashMessage = document.getElementById('flash-message');
         if(flashMessage){

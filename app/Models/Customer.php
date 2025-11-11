@@ -65,7 +65,8 @@ class Customer extends Model
         'created_name',
         'created_date',
         'created_datetime',
-        'last_update_date'
+        'last_update_date',
+        'approve_sts',
     ];
 
     public function country()
@@ -82,4 +83,15 @@ class Customer extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+     public function stateInfo()
+    {
+        return $this->belongsTo(State::class, 'state', 'id');
+    }
+
+    public function billingStateInfo()
+    {
+        return $this->belongsTo(State::class, 'bill_state', 'id');
+    }
+ 
 }

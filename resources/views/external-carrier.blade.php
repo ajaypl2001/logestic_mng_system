@@ -1,11 +1,6 @@
 @include('header')
-        <!-- ==================================================== -->
-        <!-- Start right Content here -->
-        <!-- ==================================================== -->
 
         <div class="page-content">
-
-            <!-- Start Container Fluid -->
             <div class="container-fluid">
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" id="flash-message">
@@ -28,7 +23,14 @@
                             <div class="card-header">
                                   <div class="d-flex flex-wrap justify-content-between gap-3">     
                                    <h4 class="card-title d-flex align-items-center gap-1" id="hidden_column"> External Carrier </h4>
-                                       <a href="{{ route('add_carrier')}}" class="btn btn-primary"><i class="bx bx-plus me-1"></i>Add Carrier</a>
+                                   <div class="d-flex gap-2">
+                                        <a href="{{ route('export_carrier')}}" class="btn btn-success btn-sm d-flex align-items-center gap-1">
+                                            <iconify-icon icon="vscode-icons:file-type-excel" class="fs-5"></iconify-icon>
+                                            <span>Excel</span>
+                                            <iconify-icon icon="solar:download-linear" class="fs-5"></iconify-icon>
+                                            <a href="{{ route('add_carrier')}}" class="btn btn-primary"><i class="bx bx-plus me-1"></i>Add Carrier</a>
+                                        </a>
+                                   </div>
                                </div>
                             </div>
                             <div class="card-body">
@@ -45,10 +47,11 @@
                                                           <th>Zip</th>
                                                           <th>Telephone</th>
                                                           <th>Status</th>
-                                                          {{-- <th>Approval Status</th> --}}
+                                                          <th>Approval Status</th>
                                                           <th>Date Added</th>
                                                           <th>Added By User</th>
-                                                        
+                                                          <th>Team Lead</th>
+                                                          <th>Team Manager</th>
                                                           <th>Actions</th>
                                                     </tr>
                                                   </thead>
@@ -70,9 +73,59 @@
                                                                       <span class="badge bg-danger">Deactive</span>
                                                                       @endif
                                                                  </td>
-                                                            {{-- <td><span class="badge bg-warning text-dark">Pending Approval</span></td> --}}
+                                                            <td>
+                                                                @if(Auth::user()->userrole == 'Admin' || Auth::user()->userrole == 'Operations')
+                                                                <div class="d-flex align-items-center gap-2">
+                                                                        <span class="badge {{ $carrier_datas->approve_sts == 'Approved' ? 'bg-success' : ($carrier_datas->approve_sts == 'Not Approved' ? 'bg-danger' : 'bg-warning text-dark') }}">
+                                                                            {{ $carrier_datas->approve_sts ?? 'Pending' }}
+                                                                        </span>
+                                                                        <button type="button" class="btn btn-sm btn-primary"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#statusModal{{ $carrier_datas->id }}"
+                                                                            title="Update Status">
+                                                                            <i class="fas fa-edit"></i>
+                                                                        </button>
+
+                                                                </div>
+                                                                @else
+                                                                <span class="badge {{ $carrier_datas->approve_sts == 'Approved' ? 'bg-success' : ($carrier_datas->approve_sts == 'Not Approved' ? 'bg-danger' : 'bg-warning text-dark') }}">
+                                                                        {{ $carrier_datas->approve_sts ?? 'Pending' }}
+                                                                </span>
+                                                                @endif
+                                                            </td>  
+                                                            
+                                                                <div class="modal fade" id="statusModal{{ $carrier_datas->id ?? '' }}" tabindex="-1" aria-labelledby="statusModalLabel{{ $carrier_datas->id ?? '' }}" aria-hidden="true">
+                                                                    <div class="modal-dialog">
+                                                                        <div class="modal-content">
+                                                                            <form action="{{ route('carrier_sts_query')}}" method="POST">
+                                                                                @csrf
+                                                                                <div class="modal-header">
+                                                                                    <h5 class="modal-title" id="statusModalLabel{{ $carrier_datas->id ?? '' }}">Update Status</h5>
+                                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                </div>
+                                                                                <input type="hidden" name="carrier_update_id" value="{{ $carrier_datas->id ?? '' }}">
+                                                                                <div class="modal-body">
+                                                                                    <div class="mb-3">
+                                                                                        <label for="status" class="form-label">Select Status</label>
+                                                                                        <select name="approval_sts" id="status" class="form-select" required>
+                                                                                            <option value="">Choose Status</option>
+                                                                                            <option value="Approved" {{ $carrier_datas->approve_sts == 'Approved' ? 'selected' : '' }}>Approved</option>
+                                                                                            <option value="Not Approved" {{ $carrier_datas->approve_sts == 'Not Approved' ? 'selected' : '' }}>Not Approved</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                    <button type="submit" class="btn btn-success">Save</button>
+                                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                                </div>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             <td>{{ $carrier_datas->created_at}}</td>
-                                                            <td>Admin</td>
+                                                            <td>{{ $carrier_datas->user ? $carrier_datas->user->name : 'N/A' }}</td>
+                                                            <td>{{ $carrier_datas->user && $carrier_datas->user->teamLead ? $carrier_datas->user->teamLead->name : 'N/A' }}</td>
+                                                            <td>{{ $carrier_datas->user && $carrier_datas->user->teamManager ? $carrier_datas->user->teamManager->name : 'N/A' }}</td>
                                                             
                                                             <td>
                                                              <div class="d-flex gap-2">

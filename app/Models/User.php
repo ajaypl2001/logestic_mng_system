@@ -73,5 +73,4 @@ class User extends Authenticatable
         return $this->belongsTo(User::class, 'mang_id');
     }
 
-   
 }

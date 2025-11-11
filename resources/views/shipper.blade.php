@@ -21,7 +21,14 @@
             <div class="card-header">  
                   <div class="d-flex flex-wrap justify-content-between gap-3">     
                     <h4 class="card-title d-flex align-items-center gap-1" id="hidden_column">Shipper Listing</h4>
-                    <a href="{{ route('add_shipper')}}" class="btn btn-primary btn-sm"><i class="bx bx-plus me-1"></i>Add Shipper</a>
+                    <div class="d-flex gap-2">
+                     <a href="{{ route('export_shipper')}}" class="btn btn-success btn-sm d-flex align-items-center gap-1">
+                        <iconify-icon icon="vscode-icons:file-type-excel" class="fs-5"></iconify-icon>
+                        <span>Excel</span>
+                        <iconify-icon icon="solar:download-linear" class="fs-5"></iconify-icon>
+                     </a>
+                     <a href="{{ route('add_shipper')}}" class="btn btn-primary btn-sm"><i class="bx bx-plus me-1"></i>Add Shipper</a>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -35,8 +42,8 @@
                           <th>Status</th>
                           <th>Date Added</th>
                           <th>Added By User</th>
-                          <th>Contact Email</th>
-                          <th>Country Name</th>
+                          <th>Team Lead</th>
+                          <th>Team Manager</th>
                           <th>Actions</th>
                         </tr>
                      </thead>
@@ -54,14 +61,12 @@
                               @endif
                            </td>
                            <td>{{ $shiper->created_at->format('Y-m-d') }}</td>
-                           <td>Ajay Sir</td>
-                           <td>{{ $shiper->contact_email}}</td>
-                           <td>{{ $shiper->country ? $shiper->country->countries_name : '' }}</td>
+                           <td>{{ $shiper->user ? $shiper->user->name : 'N/A' }}</td>
+                           <td>{{ $shiper->user && $shiper->user->teamLead ? $shiper->user->teamLead->name : 'N/A' }}</td>
+                           <td>{{ $shiper->user && $shiper->user->teamManager ? $shiper->user->teamManager->name : 'N/A' }}</td>
+         
                            <td>
                               <div class="d-flex gap-2">
-                                 <!-- <a href="" class="btn btn-light btn-sm">
-                                    <iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon>
-                                 </a> -->
                                  <a href="{{ route('edit_shipper', ['id'=>base64_encode($shiper->id)]) }}" class="btn btn-soft-primary btn-sm">
                                     <iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon>
                                  </a>

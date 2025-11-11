@@ -82,11 +82,17 @@ class Carrier extends Model
         'size_of_fleet',
         'main_notes',
         'created_at',
+        'approve_sts'
     ];
 
 
     public function fleetDetails()
     {
         return $this->hasMany(CarrierFleetDetail::class, 'carrier_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

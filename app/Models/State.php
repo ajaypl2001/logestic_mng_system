@@ -9,7 +9,7 @@ class State extends Model
     protected $table = 'states';
 
     public $timestamps = true;
-    
+
     protected $fillable = [
         'cou_id',
         'state',
@@ -19,5 +19,10 @@ class State extends Model
     public function country()
     {
         return $this->belongsTo(Country::class, 'cou_id');
+    }
+
+     public function customers()
+    {
+        return $this->hasMany(Customer::class, 'state', 'id');
     }
 }

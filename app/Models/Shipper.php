@@ -43,4 +43,9 @@ class Shipper extends Model
     {
         return $this->belongsTo(Country::class, 'country_name', 'id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

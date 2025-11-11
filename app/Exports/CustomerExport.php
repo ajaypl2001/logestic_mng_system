@@ -9,13 +9,10 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Illuminate\Support\Facades\Auth;
 class CustomerExport implements FromCollection, WithHeadings, WithMapping
 {
-    /**
-     * Fetch all customer records
-     */
+    private $rowNumber = 0;
     public function collection()
     {
-        $query = Customer::with('user.teamLead', 'user.teamManager', 'country')
-                         ->orderBy('id', 'ASC');
+        $query = Customer::with('user.teamLead', 'user.teamManager', 'country', 'stateInfo', 'billingStateInfo')->orderBy('id', 'ASC');
 
         if (Auth::user()->userrole != 'Admin' && Auth::user()->userrole != 'Operations') {
             $query->where('user_id', Auth::user()->id);
@@ -24,12 +21,10 @@ class CustomerExport implements FromCollection, WithHeadings, WithMapping
         return $query->get();
     }
 
-    /**
-     * Set the column headings for Excel
-     */
     public function headings(): array
     {
          return [
+            'Sno',
             'Customer Name',
             'Address',
             'City',
@@ -43,22 +38,20 @@ class CustomerExport implements FromCollection, WithHeadings, WithMapping
             'Team Lead',
             'Team Manager',
             'Credit Limit',
-            'Column 14',
-            'Column 15',
-            'Actions'
+            'Total Credit Limit Used',
+            'Remaining Credit Limit',
         ];
     }
 
-    /**
-     * Map data from Customer model to Excel columns
-     */
     public function map($customer): array
     {
+        $this->rowNumber++;
            return [
+            $this->rowNumber,
             $customer->customer_name,
             $customer->address,
             $customer->city,
-            $customer->state,
+            $customer->stateInfo->state ?? 'N/A',
             $customer->zip_code,
             $customer->telephone,
             $customer->acc_sts == 1 ? 'Active' : 'Deactive',

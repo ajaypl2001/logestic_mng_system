@@ -22,10 +22,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/AddLoadCustomer', 'AddLoadCustomer_form')->name('AddLoadCustomer');
         Route::post('/AddLoadCustomer_query', 'AddLoadCustomer_query')->name('AddLoadCustomer_query');
         Route::post('/update_customer', 'update_customer')->name('update_customer');
-        Route::get('/signed-ratecon-pdf', 'generatePdf')->name('generatePdf');
         Route::put('/customer/update-status/{id}', 'updateStatus')->name('customer_updateStatus');
-        Route::get('export_customers', 'export_customers')->name('export_customers');
-    
+        Route::get('export_customers', 'exportCustomers')->name('export_customers');
+        Route::post('/status_approval', 'cus_approval_query')->name('cus_approval_query');
     });
 
     Route::prefix('shipper')->controller(SqlActionController::class)->group(function () {
@@ -35,6 +34,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/shipper/add_edit/{id}', 'edit_shipper')->name('edit_shipper');
         Route::post('/update_shipper', 'update_shipper')->name('update_shipper');
         Route::get('/get-shipper-location/{id}', 'getshipperLocation')->name('get_shipper_location');
+        Route::get('/shpper_export', 'export_shipper')->name('export_shipper');
     });
 
     Route::prefix('consignee')->controller(SqlActionController::class)->group(function () {
@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/consign/add_edit/{id}', 'edit_consign')->name('edit_consign');
         Route::post('/update_consignee', 'update_consignee')->name('update_consignee');
         Route::get('/get-consignee-location/{id}', 'getconsigneeLocation')->name('get_consignee_location');
+        Route::get('/consignee_export', 'export_consignee')->name('export_consignee');
     });
 
     Route::prefix('mc-check')->controller(SqlActionController::class)->group(function () {
@@ -52,6 +53,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/add_mc_query', 'add_mc_query')->name('add_mc_query');
         Route::get('/edit_mc/add_edit/{id}', 'edit_mc')->name('edit_mc');
         Route::post('/update_mc', 'update_mc')->name('update_mc');
+        Route::get('mc_export', 'export_mc_check')->name('export_mc_check');
+        Route::post('mc_approve', 'mc_approve_query')->name('mc_approve');
     });
 
     Route::prefix('carrier')->controller(SqlActionController::class)->group(function () {
@@ -60,6 +63,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/add_carrier_query', 'add_carrier_query')->name('add_carrier_query');
         Route::get('/edit_carrier/carrier_edit/{id}', 'edit_carrier')->name('edit_carrier');
         Route::post('/update_carrier_query', 'update_carrier_query')->name('update_carrier_query');
+        Route::get('/export_carrier', 'export_carrier')->name('export_carrier');
+        Route::post('/carrier_sts_query', 'carrier_sts_query')->name('carrier_sts_query');
     });
 
     Route::prefix('load-creation')->controller(SqlActionController::class)->group(function () {
@@ -69,6 +74,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit_load_creation/edit_load/{id}', 'edit_load_creation')->name('edit_load_creation');
         Route::post('/update-load-status', 'updateStatus')->name('load_updateStatus');
         Route::post('/update_load_query', 'update_load_query')->name('update_load_query');
+        Route::get('/signed-ratecon-pdf', 'generatePdf')->name('generatePdf');
     });
 
     Route::prefix('users')->controller(UserController::class)->group(function () {

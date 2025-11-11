@@ -21,7 +21,12 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 
 use App\Exports\CustomerExport;
+use App\Exports\SipperExport;
+use App\Exports\ConsigneeExport;
+use App\Exports\CarrierExport;
+use App\Exports\McExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 
 class SqlActionController extends Controller
 {
@@ -46,7 +51,6 @@ class SqlActionController extends Controller
 
         return view('add_shipper', compact('countries'));
     }
-
 
     public function add_consignee_form()
     {
@@ -95,7 +99,7 @@ class SqlActionController extends Controller
 
     public function customer_get_data()
     {
-        $query = Customer::with('country')->orderBy('id', 'ASC');
+        $query = Customer::with('country', 'stateInfo', 'billingStateInfo')->orderBy('id', 'ASC');
 
         if (Auth::user()->userrole != 'Admin' && Auth::user()->userrole != 'Operations') {
             $query->where('user_id', Auth::user()->id);
@@ -105,7 +109,7 @@ class SqlActionController extends Controller
 
         return view('customer',  compact('Customers'));
     }
-    //-------------- Add Shipper ---------------------
+
     public function add_shipper_query(Request $request)
     {
         $data = [
@@ -1027,6 +1031,33 @@ class SqlActionController extends Controller
         return redirect()->route('load-creation')->with('success', 'Load Creation Updated successfully!');
     }
 
+    public function exportCustomers()
+    {
+        return Excel::download(new CustomerExport, 'customers_data.xls');
+    }
+
+    public function export_shipper()
+    {
+        return Excel::download(new SipperExport, 'sipper_date.xls');
+    }
+
+
+    public function export_consignee()
+    {
+        return Excel::download(new ConsigneeExport, 'consignee_data.xls');
+    }
+
+    public function export_carrier()
+    {
+        return Excel::download(new CarrierExport, 'carrier_data.xls');
+    }
+
+
+
+    public function export_mc_check()
+    {
+        return Excel::download(new McExport, 'mc_export_data.xls');
+    }
 
 
     public function generatePdf()
@@ -1035,12 +1066,53 @@ class SqlActionController extends Controller
 
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->stream('signed_ratecon.pdf');
+        return $pdf->download('signed_ratecon.pdf');
     }
 
 
-    public function exportCustomers()
+    public function mc_approve_query(Request $request)
     {
-        return Excel::download(new CustomerExport, 'customers.xlsx');
+        $mc_data = Mc::find($request->mc_id);
+
+        if ($mc_data) {
+            $mc_data->update([
+                'approve_sts' => $request->approval_sts,
+            ]);
+
+            return redirect()->back()->with('success', 'MC approval status updated successfully!');
+        }
+
+        return redirect()->back()->with('error', 'MC record not found.');
+    }
+
+    public function cus_approval_query(Request $request)
+    {
+        $custmor_data = Customer::find($request->customer_update_id);
+
+        if ($custmor_data) {
+            $custmor_data->update([
+                'approve_sts' => $request->approval_sts,
+            ]);
+
+            return redirect()->back()->with('success', 'Custmor approval status updated successfully!');
+        }
+
+        return redirect()->back()->with('error', 'Custmor record not found.');
+    }
+
+
+    public function carrier_sts_query(Request $request)
+    {
+        $carrier_data = Carrier::find($request->carrier_update_id);
+
+        if ($carrier_data) {
+            $carrier_data->update([
+                'approve_sts' => $request->approval_sts,
+            ]);
+
+            return redirect()->back()->with('success', 'Carrier approval status updated successfully!');
+        }
+
+        return redirect()->back()->with('error', 'Carrier record not found.');
     }
 }

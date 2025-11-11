@@ -28,7 +28,14 @@
                                   <div class="card-header">  
                                   <div class="d-flex flex-wrap justify-content-between gap-3">     
                                     <h4 class="card-title d-flex align-items-center gap-1" id="hidden_column">Consignee Listing</h4>
-                                    <a href="{{ route('add_consignee')}}" class="btn btn-primary"><i class="bx bx-plus me-1"></i>Add Consignee</a>
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ route('export_consignee')}}" class="btn btn-success btn-sm d-flex align-items-center gap-1">
+                                            <iconify-icon icon="vscode-icons:file-type-excel" class="fs-5"></iconify-icon>
+                                            <span>Excel</span>
+                                            <iconify-icon icon="solar:download-linear" class="fs-5"></iconify-icon>
+                                        </a>
+                                        <a href="{{ route('add_consignee')}}" class="btn btn-primary"><i class="bx bx-plus me-1"></i>Add Consignee</a>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -63,20 +70,17 @@
                                                                       @endif
                                                                  </td>
                                                                  <td>{{ $Consignee->created_at->format('Y-m-d') }}</td>
-                                                                 <td>Ajay Sir</td>
-                                                                 <td>{{ $Consignee->contact_email}}</td>
-                                                                 <td>{{ $Consignee->country ? $Consignee->country->countries_name : '' }}</td>
+                                                                 <td>{{ $Consignee->user ? $Consignee->user->name : 'N/A' }}</td>
+                                                                 <td>{{ $Consignee->user && $Consignee->user->teamLead ? $Consignee->user->teamLead->name : 'N/A' }}</td>
+                                                                 <td>{{ $Consignee->user && $Consignee->user->teamManager ? $Consignee->user->teamManager->name : 'N/A' }}</td>
                                                                  <td>
                                                                       <div class="d-flex gap-2">
-                                                                      <!-- <a href="" class="btn btn-light btn-sm">
-                                                                           <iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon>
-                                                                      </a> -->
                                                                       <a href="{{ route('edit_consign', ['id'=>base64_encode($Consignee->id)]) }}" class="btn btn-soft-primary btn-sm">
                                                                            <iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon>
                                                                       </a>
                                                                       </div>
                                                                  </td>
-                    
+
                                                        </tr>
                                                         @endforeach
                                                   </tbody>

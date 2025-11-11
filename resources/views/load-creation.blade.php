@@ -35,12 +35,17 @@
                            <th>Load #</th>
                            <th>Payment Type</th>
                            <th>W/O #</th>
+                           <th>Driver/Carrier</th>
                            <th>Ship Date</th>
                            <th>Load Creation Date</th>
+                           <th>Del Date</th>
                            <th>Customer</th>
+                           <th>Origin</th>
+                           <th>Destination</th>
                            <th>Shipper Rate</th>
                            <th>Career fee</th>
                            <th>Load Status</th>
+                           <th>AR</th>
                            <th>Action</th>
                         </tr>
                      </thead>
@@ -50,13 +55,17 @@
                            <td>{{$load->id}}</td>
                            <td>{{$load->payment_type}}</td>
                            <td>{{$load->wo}}</td>
+                           <td>N/A</td>
                            <td>{{$load->created_at}}</td>
                            <td>{{$load->created_at}}</td>
+                           <td>N/A</td>
                            <td>{{ $load->customer->customer_name ?? '' }}</td>
+                           <td>N/A</td>
+                           <td>N/A</td>
                            <td>{{$load->shipper_rate}}</td>
                            <td>{{$load->carrier_fee}}</td>
                            <td>
-                              <select class="form-select load-status" id="load_status" data-id="{{ $load->id }}" name="status" required>
+                              <select class="form-select load-status" id="load_status" data-id="{{ $load->id }}" name="status" required style="width: 150px !important;">
                                  <option value="">Select Status</option>
                                  <option value="Open" {{ $load->load_status == 'Open' ? 'selected' : '' }}>Open</option>
                                  <option value="Covered" {{ $load->load_status == 'Covered' ? 'selected' : '' }}>Covered</option>
@@ -72,15 +81,15 @@
                                  <option value="To be recovered" {{ $load->load_status == 'To be recovered' ? 'selected' : '' }}>To be recovered</option>
                               </select>
                            </td>
-                             
+                           <td>N/A</td>
                            <td>
                               <div class="d-flex gap-2">
                                  <a href="{{ route('edit_load_creation', ['id' => base64_encode($load->id)])}}" class="btn btn-soft-primary btn-sm">
                                     <iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon>
                                  </a>
-                                {{-- <a href="" class="btn btn-soft-danger btn-sm" title="View PDF">
-                                  <iconify-icon icon="solar:document-broken" class="align-middle fs-18"></iconify-icon>
-                                </a> --}}
+                                 <a href="{{ route('generatePdf')}}" class="btn btn-soft-danger btn-sm" title="View PDF">
+                                   <i class="fa-solid fa-file-pdf fs-18"></i>
+                                 </a>
                               </div>
                            </td>
                         </tr>
