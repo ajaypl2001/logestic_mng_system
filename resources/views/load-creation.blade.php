@@ -56,6 +56,7 @@
                            <td>{{$load->payment_type}}</td>
                            <td>{{$load->wo}}</td>
                            <td>N/A</td>
+                           {{-- <td>{{ $load->consignees->pluck('consignee.name')->filter()->unique()->join(', ') }}</td> --}}
                            <td>{{$load->created_at}}</td>
                            <td>{{$load->created_at}}</td>
                            <td>N/A</td>
@@ -87,14 +88,13 @@
                                  <a href="{{ route('edit_load_creation', ['id' => base64_encode($load->id)])}}" class="btn btn-soft-primary btn-sm">
                                     <iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon>
                                  </a>
-                                 <a href="{{ route('generatePdf')}}" class="btn btn-soft-danger btn-sm" title="View PDF">
+                                 <a href="{{ route('generatePdf', ['id' => base64_encode($load->id)])}}" class="btn btn-soft-danger btn-sm" title="View PDF">
                                    <i class="fa-solid fa-file-pdf fs-18"></i>
                                  </a>
                               </div>
                            </td>
                         </tr>
                         @endforeach
-                        
                      </tbody>
                   </table>
                </div>

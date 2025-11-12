@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ShipperDetail extends Model
 {
-    protected $table = 'shipper_details'; 
-    
-    public $timestamps = true; 
+    protected $table = 'shipper_details';
+
+    public $timestamps = true;
 
     protected $fillable = [
         'creation_id',
@@ -26,8 +26,13 @@ class ShipperDetail extends Model
         'customer_broker',
     ];
 
-     public function loadcreation()
+    public function loadcreation()
     {
         return $this->belongsTo(LoadCreation::class, 'creation_id', 'id');
+    }
+
+    public function shipper()
+    {
+        return $this->belongsTo(Shipper::class, 'shipper_id', 'id');
     }
 }

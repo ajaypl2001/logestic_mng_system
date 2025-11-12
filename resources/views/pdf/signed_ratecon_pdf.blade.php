@@ -56,7 +56,7 @@ th, td {
         <tr>
             <td style="width:50%;">
             <p><b><span style="padding-right:20px">Shipment #</span> FIM7099</b></p>
-                <img src="https://freightrix.ca/images/fim_img.jpg" width="100"><br><br>
+                <img src="{{ asset('images/logo-sm.png') }}" width="100"><br><br>
                 <b>Freight In Motion Brokerage LTD</b><br><br>
                 28 Kerr Cres.<br>
                 PUSLINCH, ON N0B2J0
@@ -72,12 +72,12 @@ th, td {
                             <td class="carrier-header">TIME</td>
                         </tr>
                         <tr>
-                            <td>Nick Bergmann</td>
-                            <td>09/26/2025</td>
-                            <td>&nbsp;</td>
+                            <td>{{ $creation_data->shippers->first()->shipper_location ?? ''}}</td>
+                            <td>{{ $creation_data->shippers->first()->shipper_date ?? ''}}</td>
+                            <td>&nbsp;{{ $creation_data->shippers->first()->shipper_chktime ?? ''}}</td>
                         </tr>
                          <tr>
-                            <td colspan="3" style="border-bottom:1px solid #fff;">(519) 824-2424 (p)</td>
+                            <td colspan="3" style="border-bottom:1px solid #fff;">{{ $creation_data->shippers->first()->po_number ?? ''}}</td>
                         </tr>
                         <tr>
                             <td colspan="3">dispatch@freightinmotion.ca</td>
@@ -88,15 +88,16 @@ th, td {
                             <td class="carrier-header" colspan="2">ATT</td>
                         </tr>
                         <tr>
-                            <td>CHISEL LOGISTICS LLC - USC</td>
-                            <td colspan="2">TOM JAMES</td>
+                            <td>{{ $creation_data->consignees->first()->consignee_location ?? ''}}</td>
+                            <td colspan="2">{{ $creation_data->consignees->first()->consignee_date ?? ''}}({{ $creation_data->consignees->first()->consignee_time ?? ''}})</td>
+
                         </tr>
                         <tr>
                             <td class="carrier-header">PHONE</td>
                             <td class="carrier-header" colspan="2">FAX</td>
                         </tr>
                         <tr>
-                            <td>(516) 656-1020</td>
+                            <td>{{ $creation_data->consignees->first()->consignee_po_number ?? ''}}</td>
                             <td colspan="2">&nbsp;</td>
                         </tr>
                     </table>
@@ -183,19 +184,19 @@ th, td {
     </tr>
     <tr>
         <td style="text-align:right;border-bottom:1px solid #fff;">Name:</td>
-        <td style="border-bottom:1px solid #fff;">INTERCONTINENTAL SERVICES OF DELA</td>
+        <td style="border-bottom:1px solid #fff;">{{ $creation_data->shippers->first()->shipper->name ?? '' }}</td>
         <td style="text-align:right;border-bottom:1px solid #fff;">Phone:</td>
-        <td style="border-bottom:1px solid #fff;">(519) 824-2424</td>
+        <td style="border-bottom:1px solid #fff;">{{ $creation_data->shippers->first()->po_number ?? '' }}</td>
     </tr>
     <tr>
         <td style="text-align:right;border-bottom:1px solid #fff;">Address:</td>
-        <td style="border-bottom:1px solid #fff;">700 NEW CASTLE AVE</td>
+        <td style="border-bottom:1px solid #fff;">{{ $creation_data->shippers->first()->shipper_location ?? '' }}</td>
         <td style="text-align:right;border-bottom:1px solid #fff;">Contact:</td>
-        <td style="border-bottom:1px solid #fff;">&nbsp;</td>
+        <td style="border-bottom:1px solid #fff;">&nbsp;{{ $creation_data->shippers->first()->po_number ?? '' }}</td>
     </tr>
     <tr>
         <td style="text-align:right;border-bottom:1px solid #fff;">City, State Zip:</td>
-        <td style="border-bottom:1px solid #fff;">WILMINGTON, DE 19801</td>
+        <td style="border-bottom:1px solid #fff;">{{ $creation_data->shippers->first()->shipper->city ?? '' }}{{ $creation_data->shippers->first()->shipper->state_name ?? '' }}{{ $creation_data->shippers->first()->shipper->zip_code ?? '' }}</td>
         <td style="text-align:right;border-bottom:1px solid #fff;">Appt Date/Time:</td>
         <td style="border-bottom:1px solid #fff;">09/26/2025</td>
     </tr>
@@ -226,19 +227,19 @@ th, td {
     </tr>
     <tr>
         <td style="text-align:right;border-bottom:1px solid #fff;">Name:</td>
-        <td style="border-bottom:1px solid #fff;">CAPE GIRARDEAU MO- WHS 1</td>
+        <td style="border-bottom:1px solid #fff;">{{ $creation_data->consignees->first()->consignee->name ?? ''}}</td>
         <td style="text-align:right;border-bottom:1px solid #fff;">Phone:</td>
-        <td style="border-bottom:1px solid #fff;">(919) 825-1901</td>
+        <td style="border-bottom:1px solid #fff;">{{ $creation_data->consignees->first()->consignee_po_number ?? ''}}</td>
     </tr>
     <tr>
         <td style="text-align:right;border-bottom:1px solid #fff;">Address:</td>
-        <td style="border-bottom:1px solid #fff;">5422 NASH ROAD</td>
+        <td style="border-bottom:1px solid #fff;">{{ $creation_data->consignees->first()->consignee_location ?? ''}}</td>
         <td style="text-align:right;border-bottom:1px solid #fff;">Contact:</td>
-        <td style="border-bottom:1px solid #fff;">&nbsp;</td>
+        <td style="border-bottom:1px solid #fff;">&nbsp;{{ $creation_data->consignees->first()->consignee->tele_phone ?? ''}}</td>
     </tr>
     <tr>
         <td style="text-align:right;border-bottom:1px solid #fff;">City, State Zip:</td>
-        <td style="border-bottom:1px solid #fff;">CAPE GIRARDEAU, MO 63701</td>
+        <td style="border-bottom:1px solid #fff;">{{ $creation_data->consignees->first()->consignee->city ?? ''}}-{{ $creation_data->consignees->first()->consignee->state_name ?? ''}}-{{ $creation_data->consignees->first()->consignee->zip_code ?? ''}}</td>
         <td style="text-align:right;border-bottom:1px solid #fff;">Appt Date/Time:</td>
         <td style="border-bottom:1px solid #fff;">09/29/2025 13:00</td>
     </tr>
@@ -272,13 +273,13 @@ th, td {
     </tr>
     <tr>
         <td style="border-bottom:1px solid #fff;">Freight Charge</td>
-        <td style="border-bottom:1px solid #fff;">$1,593.00</td>
-        <td style="border-bottom:1px solid #fff;">&nbsp;</td>
+        <td style="border-bottom:1px solid #fff;">{{ $creation_data->charges->sum('amount') }}</td>
+        <td style="border-bottom:1px solid #fff;">&nbsp;{{ $creation_data->currency }}</td>
     </tr>
     <tr>
         <td class="charges-label">TOTAL RATE</td>
-        <td class="text-right text-bold"><b>$1,593.00</b></td>
-        <td>US Dollars</td>
+        <td class="text-right text-bold"><b>{{ $creation_data->carrier_fee }}</b></td>
+        <td>{{ $creation_data->currency }}</td>
     </tr>
 </table>
 

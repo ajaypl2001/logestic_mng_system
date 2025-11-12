@@ -14,10 +14,10 @@ class UserController extends Controller
 {
     public function users_list()
     {
-        $users = User::where('status', 'Active')->where('userrole', '!=', 'Admin')->get();
-        $team_lead = User::where('status', 'Active')->where('userrole', 'Team Lead')->get();
-        $team_mang = User::where('status', 'Active')->where('userrole', 'Manager')->get();
-    
+        $users = User::where('status', 'Active')->where('userrole', '!=', 'Admin')->orderBy('id', 'asc')->get();
+        $team_lead = User::where('status', 'Active')->where('userrole', 'Team Lead')->orderBy('id', 'asc')->get();
+        $team_mang = User::where('status', 'Active')->where('userrole', 'Manager')->orderBy('id', 'asc')->get();
+
         return view('users', compact('users', 'team_lead', 'team_mang'));
     }
 
@@ -35,7 +35,7 @@ class UserController extends Controller
         $data['l_name'] = $request->l_name;
         $data['name'] = $request->f_name . ' ' . $request->l_name;
         $data['org_password'] = $request->password;
-        $data['password'] = Hash::make($request->password); 
+        $data['password'] = Hash::make($request->password);
 
         $data['form_permission'] = json_encode($request->form_permission);
         User::create($data);
@@ -43,7 +43,8 @@ class UserController extends Controller
         return redirect()->route('users_list')->with('success', 'User added successfully!');
     }
 
-    public function edit_user($id){
+    public function edit_user($id)
+    {
         $user_id = base64_decode($id);
         $user = User::where('status', 'Active')->where('userrole', '!=', 'Admin')->where('id', $user_id)->first();
         $team_lead = User::where('status', 'Active')->where('userrole', 'Team Lead')->get();
@@ -52,30 +53,29 @@ class UserController extends Controller
         return view('add_users', compact('user', 'team_lead', 'team_mang'));
     }
 
-    public function update_user_query(Request $request)
+    public function update_user_query(Request $request, $id)
     {
-        $data = $request->all();
-        $user = User::find($request->user_id);
+        $user = User::find($id);
+
         if (!$user) {
             return redirect()->back()->with('error', 'User not found!');
         }
+
+        $data = $request->except(['_token', 'user_id']);
         $data['name'] = $request->f_name . ' ' . $request->l_name;
+        $data['form_permission'] = json_encode($request->form_permission);
 
         if (!empty($request->password)) {
             $data['org_password'] = $request->password;
             $data['password'] = Hash::make($request->password);
-        } else {
-            unset($data['password']);
         }
-
-        $data['form_permission'] = json_encode($request->form_permission);
-
-        unset($data['_token'], $data['user_id']);
 
         $user->update($data);
 
         return redirect()->route('users_list')->with('success', 'User updated successfully!');
     }
+
+
 
 
     public function change_password(Request $request)
@@ -93,7 +93,7 @@ class UserController extends Controller
             return redirect()->route('edit_user', base64_encode($request->user_id))->with('error', 'Old password does not match!');
         }
 
-        $user->org_password = Hash::make($request->new_password);
+        $user->password = Hash::make($request->new_password);
         $user->org_password = $request->new_password;
         $user->save();
 
@@ -117,5 +117,4 @@ class UserController extends Controller
     {
         return Excel::download(new UsersExport, 'users.xls');
     }
-
 }

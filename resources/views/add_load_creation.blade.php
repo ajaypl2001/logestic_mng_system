@@ -34,7 +34,7 @@
                                     <div class="col-md-3">
                                        <div class="form-group mb-3">
                                           <label class="control-label mb-1">Load Number</label>
-                                          <input type="text" id="txtLoadNum" disabled="disabled" class="form-control" />
+                                          <input type="text" id="txtLoadNum" disabled="disabled" class="form-control"/>
                                        </div>
                                     </div>
                                    <div class="col-md-3">
@@ -47,7 +47,7 @@
                                                       {{ old('customer_id', $load->customer_id ?? '') == $customer->id ? 'selected' : '' }}>
                                                       {{ $customer->customer_name }}
                                                 </option>
-                                             @endforeach
+                                               @endforeach
                                         </select>
                                        </div>
                                     </div>
@@ -227,14 +227,7 @@
                                           <input type="number" id="txtCarrierfscrate" min="0" max="100" class="form-control" name="carrierrate" value="{{ $isEdit ? $load->carrierrate : '' }}"/>
                                        </div>
                                     </div>
-                                    {{-- <div class="col-md-3">
-                                       <div class="form-group mb-3">
-                                          <label class="control-label mb-1">Other Charges</label>
-                                          <a class="nav-item" id="addCarriercons" data-bs-toggle="modal" data-bs-target="#CarrierModalLong">
-                                          <i class="fa fa-plus" aria-hidden="true"></i>
-                                          </a>
-                                       </div>
-                                    </div> --}}
+                                  
                                     <div class="col-md-3">
                                        <div class="form-group mb-3">
                                           <label class="control-label mb-1">Final Carrier Fee</label>

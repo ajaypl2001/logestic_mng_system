@@ -74,7 +74,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit_load_creation/edit_load/{id}', 'edit_load_creation')->name('edit_load_creation');
         Route::post('/update-load-status', 'updateStatus')->name('load_updateStatus');
         Route::post('/update_load_query', 'update_load_query')->name('update_load_query');
-        Route::get('/signed-ratecon-pdf', 'generatePdf')->name('generatePdf');
+        Route::get('/signed-ratecon-pdf/{id}', 'generatePdf')->name('generatePdf');
     });
 
     Route::prefix('users')->controller(UserController::class)->group(function () {
@@ -82,7 +82,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/add_user', 'add_user')->name('add_user');
         Route::get('/edit_user/{id}', 'edit_user')->name('edit_user');
         Route::post('/add_user_query', 'add_user_query')->name('add_user_query');
-        Route::post('/update_user_query', 'update_user_query')->name('update_user_query');
+        Route::post('/update_user_query/{id}', 'update_user_query')->name('update_user_query');
         Route::post('/change_password', 'change_password')->name('change_password');
         Route::post('/check-email-duplicate', 'checkEmailDuplicate')->name('check_email_duplicate');
         Route::get('/export-users', 'exportUsers')->name('export_users');

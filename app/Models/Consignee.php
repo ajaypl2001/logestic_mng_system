@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Consignee extends Model
 {
     protected $table = 'consignee';
-    
-    public $timestamps = true; 
+
+    public $timestamps = true;
 
     protected $fillable = [
         'name',
@@ -41,8 +41,14 @@ class Consignee extends Model
     {
         return $this->belongsTo(Country::class, 'country_name', 'id');
     }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function details()
+    {
+        return $this->hasMany(ConsigneeDetail::class, 'consignee_id', 'id');
     }
 }

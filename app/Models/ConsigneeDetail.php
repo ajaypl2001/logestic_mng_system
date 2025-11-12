@@ -31,4 +31,10 @@ class ConsigneeDetail extends Model
     {
         return $this->belongsTo(LoadCreation::class, 'creation_id', 'id');
     }
+
+
+    public function consignee()
+    {
+        return $this->belongsTo(Consignee::class, 'consignee_id', 'id');
+    }
 }

@@ -121,17 +121,20 @@
                                  <span class="nav-text"> Dashboard </span>
                             </a>
                        </li>
+                       @php
+                         $permissions = [];
 
-                       {{-- <li class="nav-item">
-                            <a class="nav-link" href="{{ route('dashbord')}}">
-                                 <span class="nav-icon">
-                                      <iconify-icon icon="solar:widget-5-bold-duotone"></iconify-icon>
-                                 </span>
-                                 <span class="nav-text"> My Dashboard </span>
-                            </a>
-                       </li> --}}
+                         if (!empty($authUser->form_permission)) {
+                              $permissions = $authUser->form_permission;
 
-                       @if (Auth::user()->userrole == 'Admin' || Auth::user()->userrole == 'Operations')
+                              if (is_string($permissions)) {
+                                   $decoded = json_decode($permissions, true);
+                                   $permissions = is_array($decoded) ? $decoded : explode(',', $permissions);
+                              }
+                         }
+                       @endphp
+
+                       @if ($authUser->userrole == 'Admin' || $authUser->userrole == 'Operations' || in_array('User', $permissions))
                             
                        <li class="nav-item">
                          <a class="nav-link menu-arrow" href="#sidebarAdmin" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAdmin">
@@ -158,28 +161,67 @@
                                  <span class="nav-text"> Dispatch </span>
                             </a>
                             <div class="collapse" id="sidebarDispatch">
-                                 <ul class="nav sub-navbar-nav">
-                                      <li class="sub-nav-item">
-                                           <a class="sub-nav-link" href="{{ route('customer-list')}}">Customer</a>
-                                      </li>
-                                      <li class="sub-nav-item">
-                                           <a class="sub-nav-link" href="{{ route('shipper-list')}}">Shipper</a>
-                                      </li>
-                                      <li class="sub-nav-item">
-                                           <a class="sub-nav-link" href="{{ route('consignee-list')}}">Consignee</a>
-                                      </li>
-                                      <li class="sub-nav-item">
-                                           <a class="sub-nav-link" href="{{ route('external_carrier')}}">External Carrier</a>
-                                      </li>
-                                      <li class="sub-nav-item">
-                                           <a class="sub-nav-link" href="{{ route('load-creation')}}">Load Creation</a>
-                                      </li>
-                                      <li class="sub-nav-item">
-                                           <a class="sub-nav-link" href="{{ route('mc-check-list')}}">MC Check</a>
-                                      </li>
-                                    
-                                 </ul>
-                            </div>
+                              <ul class="nav sub-navbar-nav">
+                                   @if ($authUser->userrole == 'Admin' || $authUser->userrole == 'Operations')
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="{{ route('customer-list') }}">Customer</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="{{ route('shipper-list') }}">Shipper</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="{{ route('consignee-list') }}">Consignee</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="{{ route('external_carrier') }}">External Carrier</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="{{ route('load-creation') }}">Load Creation</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="{{ route('mc-check-list') }}">MC Check</a>
+                                        </li>
+
+                                   @else
+                                        @if (in_array('Customer', $permissions))
+                                             <li class="sub-nav-item">
+                                                  <a class="sub-nav-link" href="{{ route('customer-list') }}">Customer</a>
+                                             </li>
+                                        @endif
+
+                                        @if (in_array('Shipper', $permissions))
+                                             <li class="sub-nav-item">
+                                                  <a class="sub-nav-link" href="{{ route('shipper-list') }}">Shipper</a>
+                                             </li>
+                                        @endif
+
+                                        @if (in_array('Consignees', $permissions))
+                                             <li class="sub-nav-item">
+                                                  <a class="sub-nav-link" href="{{ route('consignee-list') }}">Consignee</a>
+                                             </li>
+                                        @endif
+
+                                        @if (in_array('External Career', $permissions))
+                                             <li class="sub-nav-item">
+                                                  <a class="sub-nav-link" href="{{ route('external_carrier') }}">External Carrier</a>
+                                             </li>
+                                        @endif
+
+                                        @if (in_array('Load', $permissions))
+                                             <li class="sub-nav-item">
+                                                  <a class="sub-nav-link" href="{{ route('load-creation') }}">Load Creation</a>
+                                             </li>
+                                        @endif
+
+                                        @if (in_array('MC Check', $permissions))
+                                             <li class="sub-nav-item">
+                                                  <a class="sub-nav-link" href="{{ route('mc-check-list') }}">MC Check</a>
+                                             </li>
+                                        @endif
+                                   @endif
+
+                              </ul>
+                              </div>
                        </li>
                   </ul>
              </div>

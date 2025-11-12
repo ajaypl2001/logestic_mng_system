@@ -9,7 +9,7 @@ class Shipper extends Model
     protected $table = 'shippers';
 
     public $timestamps = true;
-    
+
     protected $fillable = [
         'name',
         'addressl_1',
@@ -39,7 +39,7 @@ class Shipper extends Model
         'created_at'
     ];
 
-     public function country()
+    public function country()
     {
         return $this->belongsTo(Country::class, 'country_name', 'id');
     }
@@ -47,5 +47,10 @@ class Shipper extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function details()
+    {
+        return $this->hasMany(ShipperDetail::class, 'shipper_id', 'id');
     }
 }

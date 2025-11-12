@@ -35,7 +35,7 @@
                   <div class="row">
                      <div class="col-lg-12">
                         
-                        <form action="{{ isset($user) ? route('update_user_query', $user->id) : route('add_user_query') }}" id="AdduserForm" method="post" autocomplete="off">
+                        <form action="{{ isset($user) ? route('update_user_query', ['id' => $user->id]) : route('add_user_query') }}" id="AdduserForm" method="post" autocomplete="off">
                             @csrf
                             <div class="row">
                                 <div class="col-md-4">
@@ -89,21 +89,21 @@
                                 <div class="col-md-4">
                                     <div class="form-group mb-3">
                                         <label class="control-label mb-1">Last Name <span class="text-danger">*</span></label>
-                                        <input placeholder="Enter Last Name" class="form-control" id="l_name" name="l_name" value="{{ old('f_name', $user->l_name ?? '') }}" type="text" required />
+                                        <input placeholder="Enter Last Name" class="form-control" id="l_name" name="l_name" value="{{ old('l_name', $user->l_name ?? '') }}" type="text" required />
                                     </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group mb-3">
                                         <label class="control-label mb-1">Alias <span class="text-danger">*</span></label>
-                                        <input placeholder="Enter Alias" class="form-control" id="alias" name="alias" type="text" value="{{ old('f_name', $user->alias ?? '') }}" required />
+                                        <input placeholder="Enter Alias" class="form-control" id="alias" name="alias" type="text" value="{{ old('alias', $user->alias ?? '') }}" required />
                                     </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group mb-3">
                                         <label class="control-label mb-1">Phone <span class="text-danger">*</span></label>
-                                        <input placeholder="XXX-XXX-XXXX" class="form-control" id="phone" name="phone" type="text" value="{{ old('f_name', $user->phone ?? '') }}" required />
+                                        <input placeholder="XXX-XXX-XXXX" class="form-control" id="phone" name="phone" type="text" value="{{ old('phone', $user->phone ?? '') }}" required />
                                         <small id="phone-error" class="text-danger"></small>
                                     </div>
                                 </div>
@@ -111,7 +111,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group mb-3">
                                         <label class="control-label mb-1">Fax</label>
-                                        <input placeholder="Enter Fax Number" class="form-control" id="fax" name="fax" type="number" value="{{ old('f_name', $user->fax ?? '') }}"/>
+                                        <input placeholder="Enter Fax Number" class="form-control" id="fax" name="fax" type="number" value="{{ old('fax', $user->fax ?? '') }}"/>
                                     </div>
                                 </div>
 

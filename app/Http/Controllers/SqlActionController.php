@@ -746,7 +746,7 @@ class SqlActionController extends Controller
 
     public function load_creation()
     {
-        $query = LoadCreation::with(['charges', 'shippers', 'consignees', 'customer'])->orderBy('id', 'ASC');
+        $query = LoadCreation::with(['charges', 'shippers', 'consignees.consignee', 'customer'])->orderBy('id', 'ASC');
 
         if (Auth::user()->userrole != 'Admin' && Auth::user()->userrole != 'Operations') {
             $query->where('user_id', Auth::user()->id);
@@ -1060,13 +1060,20 @@ class SqlActionController extends Controller
     }
 
 
-    public function generatePdf()
+    public function generatePdf($id)
     {
-        $pdf = Pdf::loadView('pdf.signed_ratecon_pdf');
+        $load_id = base64_decode($id);
+        // dd($load_id);
+
+        $creation_data = LoadCreation::with(['charges', 'shippers', 'consignees.consignee', 'customer'])->where('id', $load_id)->first();
+
+        $pdf = Pdf::loadView('pdf.signed_ratecon_pdf', compact('creation_data'));
 
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->download('signed_ratecon.pdf');
+        // return $pdf->download('signed_ratecon.pdf');
+        return $pdf->stream('signed_ratecon.pdf');
+
     }
 
 
