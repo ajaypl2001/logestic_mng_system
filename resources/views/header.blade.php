@@ -68,11 +68,8 @@
 
                                  </a>
                                  <div class="dropdown-menu dropdown-menu-end">
-                                      <!-- item-->
                                       <h6 class="dropdown-header">Welcome Opulence Digitech(<span class="greeting">{{ Auth::user()->name ?? 'User' }}</span>)</h6>
                                       
-
-
                                       <div class="dropdown-divider my-1"></div>
 
                                       <a class="dropdown-item text-danger" href="{{ route('logout') }}">
