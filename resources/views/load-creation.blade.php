@@ -52,17 +52,16 @@
                      <tbody>
                         @foreach ($loads as $load)
                            <tr>
-                           <td>{{$load->id}}</td>
-                           <td>{{$load->payment_type}}</td>
-                           <td>{{$load->wo}}</td>
-                           <td>N/A</td>
-                           {{-- <td>{{ $load->consignees->pluck('consignee.name')->filter()->unique()->join(', ') }}</td> --}}
+                           <td>{{$load->id ?? ''}}</td>
+                           <td>{{$load->payment_type ?? ''}}</td>
+                           <td>{{$load->wo ?? ''}}</td>
+                           <td>{{$load->mc->carrier_name ?? ''}}</td>
                            <td>{{$load->created_at}}</td>
                            <td>{{$load->created_at}}</td>
-                           <td>N/A</td>
+                           <td>{{ $load->consignees->first()->consignee->created_at ?? ''}}</td>
                            <td>{{ $load->customer->customer_name ?? '' }}</td>
-                           <td>N/A</td>
-                           <td>N/A</td>
+                           <td>{{ $load->shippers->first()->shipper_location ?? '' }}</td>
+                           <td>{{ $load->consignees->first()->consignee_location ?? ''}}</td>
                            <td>{{$load->shipper_rate}}</td>
                            <td>{{$load->carrier_fee}}</td>
                            <td>

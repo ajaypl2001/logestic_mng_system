@@ -64,7 +64,6 @@
                                                    <div class="form-group mb-3">
                                                       <label class="control-label mb-1 hidden_label">hidden label</label>
                                                       <input Placeholder="M.C. #/F.F. #" class="form-control required" id="mc_ff_hidden" name="mc_ff_hidden" type="text" value="{{ $isEdit ? $carrier_data->carrier_name : '' }}" />
-
                                                    </div>
                                                 </div>
                                              </div>
@@ -72,7 +71,7 @@
                                           <div class="col-md-3">
                                              <div class="form-group mb-3">
                                                 <label class="control-label mb-1">D.O.T.</label>
-                                                <input Placeholder="D.O.T." class="form-control required" id="dot" name="dot" type="date" value="{{ $isEdit ? $carrier_data->dot : '' }}" />
+                                                <input Placeholder="D.O.T." class="form-control required" id="dot" name="dot" type="text" value="{{ $isEdit ? $carrier_data->dot : '' }}" />
                                              </div>
                                           </div>
                                           <div class="col-md-3">

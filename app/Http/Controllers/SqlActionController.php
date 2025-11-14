@@ -127,7 +127,7 @@ class SqlActionController extends Controller
             'telephone_ext' => $request->extn,
             'toll_free' => $request->toll_free,
             'fax' => $request->fax,
-            'shipping_hours' => $request->shipping_hours,
+            'shipping_hours' => preg_replace('/[^0-9]/', '', $request->shipping_hours),
             'appointments' => $request->appointments,
             'major_inspection_Dir' => $request->MajorInspectionDirections,
             'duplicate_Info' => null,
@@ -195,7 +195,7 @@ class SqlActionController extends Controller
             'telephone_ext' => $request->extn,
             'toll_free' => $request->toll_free,
             'fax' => $request->fax,
-            'shipping_hours' => $request->shipping_hours,
+            'shipping_hours' => preg_replace('/[^0-9]/', '', $request->shipping_hours),
             'appointments' => $request->appointments,
             'major_inspection_Dir' => $request->MajorInspectionDirections,
             'as_consignee' => $request->as_consignee,
@@ -235,7 +235,7 @@ class SqlActionController extends Controller
             'telephone_ext' => $request->TelephoneExt,
             'toll_free' => $request->TollFree,
             'fax' => $request->Fax,
-            'shipping_hours' => $request->strShippingHours,
+            'consignee_hours' => preg_replace('/[^0-9]/', '', $request->strShippingHours),
             'appointments' => $request->strAppointments,
             'major_inspection_Dir' => $request->MajorInspectionDirections,
             'notes' => $request->Notes,
@@ -268,7 +268,7 @@ class SqlActionController extends Controller
             'telephone_ext' => $request->TelephoneExt,
             'toll_free' => $request->TollFree,
             'fax' => $request->Fax,
-            'consignee_hours' => $request->strShippingHours,
+            'consignee_hours' => preg_replace('/[^0-9]/', '', $request->strShippingHours),
             'appointments' => $request->strAppointments,
             'major_inspection_Dir' => $request->MajorInspectionDirections,
             'as_shipper' => $request->as_shipper,
@@ -746,7 +746,7 @@ class SqlActionController extends Controller
 
     public function load_creation()
     {
-        $query = LoadCreation::with(['charges', 'shippers', 'consignees.consignee', 'customer'])->orderBy('id', 'ASC');
+        $query = LoadCreation::with(['charges', 'shippers', 'consignees.consignee', 'customer', 'mc'])->orderBy('id', 'ASC');
 
         if (Auth::user()->userrole != 'Admin' && Auth::user()->userrole != 'Operations') {
             $query->where('user_id', Auth::user()->id);
@@ -1065,7 +1065,7 @@ class SqlActionController extends Controller
         $load_id = base64_decode($id);
         // dd($load_id);
 
-        $creation_data = LoadCreation::with(['charges', 'shippers', 'consignees.consignee', 'customer'])->where('id', $load_id)->first();
+        $creation_data = LoadCreation::with(['charges', 'shippers', 'consignees.consignee', 'customer', 'mc'])->where('id', $load_id)->first();
 
         $pdf = Pdf::loadView('pdf.signed_ratecon_pdf', compact('creation_data'));
 

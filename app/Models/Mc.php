@@ -27,4 +27,10 @@ class Mc extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+
+    public function loads()
+    {
+        return $this->hasMany(LoadCreation::class, 'mc_no', 'mc_no');
+    }
 }

@@ -77,7 +77,7 @@ th, td {
                             <td>&nbsp;{{ $creation_data->shippers->first()->shipper_chktime ?? ''}}</td>
                         </tr>
                          <tr>
-                            <td colspan="3" style="border-bottom:1px solid #fff;">{{ $creation_data->shippers->first()->po_number ?? ''}}</td>
+                            <td colspan="3" style="border-bottom:1px solid #fff;">{{ $creation_data->shippers->first()->shipper->tele_phone ?? ''}}</td>
                         </tr>
                         <tr>
                             <td colspan="3">dispatch@freightinmotion.ca</td>
@@ -97,7 +97,7 @@ th, td {
                             <td class="carrier-header" colspan="2">FAX</td>
                         </tr>
                         <tr>
-                            <td>{{ $creation_data->consignees->first()->consignee_po_number ?? ''}}</td>
+                            <td>{{ $creation_data->consignees->first()->consignee->tele_phone ?? ''}}</td>
                             <td colspan="2">&nbsp;</td>
                         </tr>
                     </table>
@@ -117,7 +117,7 @@ th, td {
         </tr>
 
         <tr>
-            <td>1559435</td>
+            <td>{{ $creation_data->mc->mc_no ?? ''}}</td>
             <td>4092596</td>
             <td>00</td>
             <td>00</td>
@@ -186,31 +186,41 @@ th, td {
         <td style="text-align:right;border-bottom:1px solid #fff;">Name:</td>
         <td style="border-bottom:1px solid #fff;">{{ $creation_data->shippers->first()->shipper->name ?? '' }}</td>
         <td style="text-align:right;border-bottom:1px solid #fff;">Phone:</td>
-        <td style="border-bottom:1px solid #fff;">{{ $creation_data->shippers->first()->po_number ?? '' }}</td>
+        <td style="border-bottom:1px solid #fff;">{{ $creation_data->shippers->first()->shipper->tele_phone ?? '' }}</td>
     </tr>
     <tr>
         <td style="text-align:right;border-bottom:1px solid #fff;">Address:</td>
         <td style="border-bottom:1px solid #fff;">{{ $creation_data->shippers->first()->shipper_location ?? '' }}</td>
         <td style="text-align:right;border-bottom:1px solid #fff;">Contact:</td>
-        <td style="border-bottom:1px solid #fff;">&nbsp;{{ $creation_data->shippers->first()->po_number ?? '' }}</td>
+        <td style="border-bottom:1px solid #fff;">&nbsp;{{ $creation_data->shippers->first()->shipper->tele_phone ?? '' }}</td>
     </tr>
     <tr>
         <td style="text-align:right;border-bottom:1px solid #fff;">City, State Zip:</td>
         <td style="border-bottom:1px solid #fff;">{{ $creation_data->shippers->first()->shipper->city ?? '' }}{{ $creation_data->shippers->first()->shipper->state_name ?? '' }}{{ $creation_data->shippers->first()->shipper->zip_code ?? '' }}</td>
         <td style="text-align:right;border-bottom:1px solid #fff;">Appt Date/Time:</td>
-        <td style="border-bottom:1px solid #fff;">09/26/2025</td>
+        <td style="border-bottom:1px solid #fff;">{{ $creation_data->shippers->first()->shipper_date ?? '' }}/{{ $creation_data->shippers->first()->shipper_chktime ?? '' }}</td>
     </tr>
     <tr>
         <td style="border-bottom:1px solid #fff;">&nbsp;</td>
         <td style="border-bottom:1px solid #fff;">&nbsp;</td>
         <td style="text-align:right;border-bottom:1px solid #fff;">PO #:</td>
-        <td style="border-bottom:1px solid #fff;">PU# 2064682 / REF# 130681</td>
+        <td style="border-bottom:1px solid #fff;">{{ $creation_data->shippers->first()->po_number ?? '' }}</td>
     </tr>
+    @php
+    use Carbon\Carbon;
+
+    $start = Carbon::parse($creation_data->shippers->first()->shipper_chktime);
+
+    $rawHours = $creation_data->shippers->first()->shipper->shipping_hours ?? '0';
+    $hours = (int) preg_replace('/[^0-9]/', '', $rawHours);
+
+    $end = (clone $start)->addHours($hours);
+    @endphp
     <tr>
         <td style="border-bottom:1px solid #fff;">&nbsp;</td>
         <td style="border-bottom:1px solid #fff;">&nbsp;</td>
         <td style="text-align:right;border-bottom:1px solid #fff;">Hours:</td>
-        <td style="border-bottom:1px solid #fff;">07:00 -to- 15:00</td>
+        <td style="border-bottom:1px solid #fff;">{{ $start->format('H:i') }} - to - {{ $end->format('H:i') }}</td>
     </tr>
     <tr>
         <td>&nbsp;</td>
@@ -229,7 +239,7 @@ th, td {
         <td style="text-align:right;border-bottom:1px solid #fff;">Name:</td>
         <td style="border-bottom:1px solid #fff;">{{ $creation_data->consignees->first()->consignee->name ?? ''}}</td>
         <td style="text-align:right;border-bottom:1px solid #fff;">Phone:</td>
-        <td style="border-bottom:1px solid #fff;">{{ $creation_data->consignees->first()->consignee_po_number ?? ''}}</td>
+        <td style="border-bottom:1px solid #fff;">{{ $creation_data->consignees->first()->consignee->tele_phone ?? ''}}</td>
     </tr>
     <tr>
         <td style="text-align:right;border-bottom:1px solid #fff;">Address:</td>
@@ -241,19 +251,25 @@ th, td {
         <td style="text-align:right;border-bottom:1px solid #fff;">City, State Zip:</td>
         <td style="border-bottom:1px solid #fff;">{{ $creation_data->consignees->first()->consignee->city ?? ''}}-{{ $creation_data->consignees->first()->consignee->state_name ?? ''}}-{{ $creation_data->consignees->first()->consignee->zip_code ?? ''}}</td>
         <td style="text-align:right;border-bottom:1px solid #fff;">Appt Date/Time:</td>
-        <td style="border-bottom:1px solid #fff;">09/29/2025 13:00</td>
+        <td style="border-bottom:1px solid #fff;">{{ $creation_data->consignees->first()->consignee_date ?? '' }}/{{ $creation_data->consignees->first()->consignee_time ?? '' }}</td>
     </tr>
     <tr>
         <td style="border-bottom:1px solid #fff;">&nbsp;</td>
         <td style="border-bottom:1px solid #fff;">&nbsp;</td>
         <td style="text-align:right;border-bottom:1px solid #fff;">PO #:</td>
-        <td style="border-bottom:1px solid #fff;">PO# VLS1016125</td>
+        <td style="border-bottom:1px solid #fff;">{{ $creation_data->consignees->first()->consignee_po_number ?? ''}}</td>
     </tr>
+     @php
+    $consinee_start = Carbon::parse($creation_data->consignees->first()->consignee_time);
+    $consinee_rawHours = $creation_data->consignees->first()->consignee->consignee_hours ?? '0';
+    $consine_hours = (int) preg_replace('/[^0-9]/', '', $consinee_rawHours);
+    $consinee_end = (clone $consinee_start)->addHours($consine_hours);
+    @endphp
     <tr>
         <td style="border-bottom:1px solid #fff;">&nbsp;</td>
         <td style="border-bottom:1px solid #fff;">&nbsp;</td>
         <td style="text-align:right;border-bottom:1px solid #fff;">Hours:</td>
-        <td style="border-bottom:1px solid #fff;">&nbsp;</td>
+        <td style="border-bottom:1px solid #fff;">&nbsp;{{ $consinee_start->format('H:i') }} - to - {{ $consinee_end->format('H:i') }}</td>
     </tr>
     <tr>
         <td>&nbsp;</td>

@@ -57,4 +57,9 @@ class LoadCreation extends Model
     {
         return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
+
+     public function mc()
+    {
+        return $this->belongsTo(Mc::class, 'mc_no', 'mc_no');
+    }
 }
