@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('load_creation', function (Blueprint $table) {
             $table->id();
-             $table->unsignedBigInteger('customer_id')->nullable();
+            $table->unsignedBigInteger('customer_id')->nullable();
+            $table->string('load_number')->nullable();
             $table->string('search_terms')->nullable();
             $table->string('dispatcher')->nullable();
             $table->string('load_status')->nullable();
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->string('load_type')->nullable();
             $table->string('bill_type')->nullable();
             $table->string('mc_no')->nullable();
+            $table->string('carrier_name')->nullable();
             $table->string('equipment_type')->nullable();
             $table->decimal('carrier_fee', 10, 2)->nullable();
             $table->string('currency', 10)->nullable();

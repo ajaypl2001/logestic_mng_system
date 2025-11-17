@@ -56,14 +56,14 @@ th, td {
         <tr>
             <td style="width:50%;">
             <p><b><span style="padding-right:20px">Shipment #</span> FIM7099</b></p>
-                <img src="{{ asset('images/logo-sm.png') }}" width="100"><br><br>
-                <b>Freight In Motion Brokerage LTD</b><br><br>
+                <img src="images/logo-sm.png" width="100"><br><br>
+                <b>Freight In Motion Brokerage LTD</b><br><br>  
                 28 Kerr Cres.<br>
                 PUSLINCH, ON N0B2J0
             </td>
             <td style="text-align:right;">
                 <h2>Rate Confirmation</h2>
-                <p style="font-style: italic;color:#9c9a9a;font-size:11px;margin-bottom:5px"><b>Thursday, September 25, 2025 2:30 PM (Central Standard Time)</b></p>
+                <p style="font-style: italic;color:#9c9a9a;font-size:11px;margin-bottom:5px"><b>{{ \Carbon\Carbon::now()->format('l, F d, Y g:i A') }}(Central Standard Time)</b></p>
                     <table class="carrier-table">
                    
                         <tr><td rowspan="4" style="border-bottom:1px solid #ccc;width:10px !important; word-break: normal; white-space: normal;">F<br>R<br>O<br>M </td>
@@ -396,11 +396,11 @@ reissued for any reason, a fee of $12.50 per cheque will be deducted from your i
     <tr>
         <td style="border: none;">
             <b>Carrier Signature</b> 
-            <span class="signature-line"><span style="font-style: italic;">ANU M</span></span>
+            <span class="signature-line"><span style="font-style: italic;">{{ $creation_data->mc->carrier_name ?? ''}}</span></span>
         </td>
         <td style="border: none;">
             <b>Date</b> 
-            <span class="signature-line"><span style="font-style: italic;">04/25/2025</span></span>
+            <span class="signature-line"><span style="font-style: italic;">{{ $creation_data->mc->created_datetime ?? ''}}</span></span>
         </td>
     </tr>
     <tr>

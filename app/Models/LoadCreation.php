@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class LoadCreation extends Model
 {
     protected $table = 'load_creation';
-    
-    public $timestamps = true; 
+
+    public $timestamps = true;
 
     protected $fillable = [
+        'load_number',
         'customer_id',
         'user_id',
         'search_terms',
@@ -27,6 +28,7 @@ class LoadCreation extends Model
         'load_type',
         'bill_type',
         'mc_no',
+        'carrier_name',
         'equipment_type',
         'carrier_fee',
         'currency',
@@ -43,7 +45,7 @@ class LoadCreation extends Model
         return $this->hasMany(Charge::class, 'creation_id', 'id');
     }
 
-     public function shippers()
+    public function shippers()
     {
         return $this->hasMany(ShipperDetail::class, 'creation_id', 'id');
     }
@@ -53,12 +55,12 @@ class LoadCreation extends Model
         return $this->hasMany(ConsigneeDetail::class, 'creation_id', 'id');
     }
 
-     public function customer()
+    public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
 
-     public function mc()
+    public function mc()
     {
         return $this->belongsTo(Mc::class, 'mc_no', 'mc_no');
     }

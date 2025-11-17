@@ -770,6 +770,18 @@ class SqlActionController extends Controller
 
     public function add_load_creation_query(Request $request)
     {
+        $lastLoad = LoadCreation::latest('id')->first();
+        $year = date('Y');
+
+        if (!$lastLoad) {
+            $nextNumber = 1;
+        } else {
+            $lastSequence = intval(substr($lastLoad->load_number, -5));
+            $nextNumber = $lastSequence + 1;
+        }
+
+        $loadNumber = "LD-$year-" . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+
         $load_Data = $request->only([
             'customer_id',
             'user_id',
@@ -790,9 +802,11 @@ class SqlActionController extends Controller
             'carrier_fee',
             'currency',
             'carrier_pds',
+            'carrier_name',
             'carrierrate_check',
             'final_carrier_fee'
         ]);
+        $load_Data['load_number'] = $loadNumber;
 
         $load = LoadCreation::create($load_Data);
 
@@ -943,6 +957,7 @@ class SqlActionController extends Controller
     public function update_load_query(Request $request)
     {
         $load_Data = $request->only([
+            'load_number',
             'customer_id',
             'user_id',
             'search_terms',
@@ -958,6 +973,7 @@ class SqlActionController extends Controller
             'adv_payment',
             'load_type',
             'mc_no',
+            'carrier_name',
             'equipment_type',
             'carrier_fee',
             'currency',
@@ -1052,8 +1068,6 @@ class SqlActionController extends Controller
         return Excel::download(new CarrierExport, 'carrier_data.xls');
     }
 
-
-
     public function export_mc_check()
     {
         return Excel::download(new McExport, 'mc_export_data.xls');
@@ -1063,7 +1077,6 @@ class SqlActionController extends Controller
     public function generatePdf($id)
     {
         $load_id = base64_decode($id);
-        // dd($load_id);
 
         $creation_data = LoadCreation::with(['charges', 'shippers', 'consignees.consignee', 'customer', 'mc'])->where('id', $load_id)->first();
 
@@ -1071,9 +1084,7 @@ class SqlActionController extends Controller
 
         $pdf->setPaper('A4', 'portrait');
 
-        // return $pdf->download('signed_ratecon.pdf');
         return $pdf->stream('signed_ratecon.pdf');
-
     }
 
 
@@ -1121,5 +1132,20 @@ class SqlActionController extends Controller
         }
 
         return redirect()->back()->with('error', 'Carrier record not found.');
+    }
+
+
+    public function getCarrier($mc_no)
+    {
+        $mc = Mc::where('mc_no', $mc_no)->first();
+
+        if ($mc) {
+            return response()->json([
+                'status' => true,
+                'carrier_name' => $mc->carrier_name
+            ]);
+        } else {
+            return response()->json(['status' => false]);
+        }
     }
 }

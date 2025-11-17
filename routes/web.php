@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/update_mc', 'update_mc')->name('update_mc');
         Route::get('mc_export', 'export_mc_check')->name('export_mc_check');
         Route::post('mc_approve', 'mc_approve_query')->name('mc_approve');
+        
     });
 
     Route::prefix('carrier')->controller(SqlActionController::class)->group(function () {
@@ -75,6 +76,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/update-load-status', 'updateStatus')->name('load_updateStatus');
         Route::post('/update_load_query', 'update_load_query')->name('update_load_query');
         Route::get('/signed-ratecon-pdf/{id}', 'generatePdf')->name('generatePdf');
+        Route::get('/get-carrier/{mc_no}', 'getCarrier')->name('get_carrier');
     });
 
     Route::prefix('users')->controller(UserController::class)->group(function () {

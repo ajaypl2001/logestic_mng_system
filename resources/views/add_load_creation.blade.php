@@ -34,7 +34,8 @@
                                     <div class="col-md-3">
                                        <div class="form-group mb-3">
                                           <label class="control-label mb-1">Load Number</label>
-                                          <input type="text" id="txtLoadNum" disabled="disabled" class="form-control"/>
+                                          <input type="text" id="txtLoadNum" disabled="disabled" value="{{ $load->load_number ?? '' }}" class="form-control"/>
+                                          <input type="hidden" name="load_number" value="{{ $load->load_number ?? '' }}">
                                        </div>
                                     </div>
                                    <div class="col-md-3">
@@ -183,6 +184,7 @@
                                        <div class="form-group mb-3">
                                           <label class="control-label mb-1">Carrier</label>
                                           <input type="text" id="carrier" name="carrier"  class="form-control" readonly="readonly" disabled />
+                                          <input type="hidden" id="carrier_name" name="carrier_name"  class="form-control" readonly="readonly"/>
                                        </div>
                                     </div>
                                     <div class="col-md-3">
@@ -1038,6 +1040,36 @@ $(document).ready(function() {
          }
       });
    });
+</script>
+<script>
+$(document).ready(function() {
+    function fetchCarrier(){
+        var mc_no = $('#mc_no').val();
+
+        if(mc_no.length > 0){
+            $.ajax({
+                url: "{{ url('load-creation/get-carrier') }}/" + mc_no,
+                type: "GET",
+                success: function(response){
+                    if(response.status){
+                        $('#carrier').val(response.carrier_name);
+                        $('#carrier_name').val(response.carrier_name);
+                    } else {
+                        $('#carrier').val('');
+                        $('#carrier_name').val('');
+                    }
+                }
+            });
+        } else {
+            $('#carrier').val('');
+            $('#carrier_name').val('');
+        }
+    }
+
+    $('#mc_no').on('keyup change', fetchCarrier);
+
+    fetchCarrier();
+});
 </script>
 
 <style>

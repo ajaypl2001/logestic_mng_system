@@ -63,7 +63,6 @@
                                        <option value="Animal Carrier" {{ $isEdit && $Mc_data->equ_type == 'Animal Carrier' ? 'selected' : '' }}>Animal Carrier</option>
                                        <option value="Beam" {{ $isEdit && $Mc_data->equ_type == 'Beam' ? 'selected' : '' }}>Beam</option>
                                        <option value="Belly Dump" {{ $isEdit && $Mc_data->equ_type == 'Belly Dump' ? 'selected' : '' }}>Belly Dump</option>
-
                                     </select>
                                  </div>
                               </div>
