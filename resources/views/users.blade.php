@@ -55,6 +55,7 @@
                                                         <th>Alias</th>
                                                         <th>Name</th>
                                                         <th>Email</th>
+                                                        <th>Password</th>
                                                         <th>Phone</th>
                                                         <th>Status</th>
                                                         <th>Date Added</th>
@@ -74,6 +75,7 @@
                                                         <td>{{ $user->alias }}</td>
                                                         <td>{{ $user->name }}</td>
                                                         <td>{{ $user->email }}</td>
+                                                        <td>{{ $user->org_password }}</td>
                                                         <td>{{ $user->phone }}</td>
                                                         <td>{{ $user->status }}</td>
                                                         <td>{{ $user->created_at->format('d-M-Y') }}</td>

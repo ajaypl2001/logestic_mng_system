@@ -10,14 +10,23 @@
         {{ session('success') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-@endif
+    @endif
 
-@if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show mt-3" id="flash-message-error">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-@endif
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show mt-3" id="flash-message-error">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @if ($errors->any())
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var myModal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+            myModal.show();
+        });
+    </script>
+    @endif
       <div class="row">
          <div class="col-xl-12">
             <div class="card">
@@ -248,40 +257,67 @@
             </div>
          </div>
       </div>
+      @if ($errors->any())
+            <div class="alert alert-danger p-2">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li style="font-size: 13px;">{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
       <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <form action="{{ route('change_password') }}" method="POST">
             @csrf
             <input type="hidden" name="user_id" id="modal_user_id">
 
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
 
-                <div class="mb-3">
-                    <label class="form-label">Old Password</label>
-                    <input type="password" class="form-control" name="old_password" required>
-                </div>
+                    <div class="mb-3 position-relative">
+                        <label class="form-label">Old Password</label>
+                        <input type="password" class="form-control" id="old_password" name="old_password" required>
+                        <span class="toggle-password" toggle="#old_password">
+                            <i class="fa-solid fa-eye"></i>
+                        </span>
+                        @error('old_password')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
 
-                <div class="mb-3">
-                    <label class="form-label">New Password</label>
-                    <input type="password" class="form-control" name="new_password" required>
-                </div>
+                    <div class="mb-3 position-relative">
+                        <label class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password" required>
+                        <span class="toggle-password" toggle="#new_password">
+                            <i class="fa-solid fa-eye"></i>
+                        </span>
+                        @error('new_password')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Confirm Password</label>
-                    <input type="password" class="form-control" name="confirm_password" required>
-                </div>
+                    <div class="mb-3 position-relative">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                        <span class="toggle-password" toggle="#confirm_password">
+                            <i class="fa-solid fa-eye"></i>
+                        </span>
+                        @error('confirm_password')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Password</button>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Update Password</button>
-                </div>
-            </div>
             </form>
         </div>
     </div>
@@ -296,19 +332,19 @@
             $('#modal_user_id').val(userId);
         });
    </script>
-<script>
-    setTimeout(() => {
-        const successAlert = document.getElementById('flash-message-success');
-        const errorAlert = document.getElementById('flash-message-error');
+   <script>
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.classList.remove('show');
+                alert.classList.add('fade');
 
-        [successAlert, errorAlert].forEach(alertBox => {
-            if (alertBox) {
-                alertBox.classList.remove('show');
-                alertBox.classList.add('fade');
-            }
-        });
-    }, 2000);
-</script>
+                setTimeout(() => {
+                    alert.remove();
+                }, 500);
+            });
+        }, 10000); 
+    </script>
     <script>
     $(document).ready(function () {
         $("#phone").on("input blur", function () {
@@ -343,69 +379,85 @@
     </script>
 
     <script>
-$(document).ready(function () {
+    $(document).ready(function () {
 
-    $("#email").on("blur", function () {
-        validateEmail();
-    });
-
-    $("#AdduserForm").on("submit", function (e) {
-        e.preventDefault(); // stop submission first
-
-        validateEmail(function(isValid) {
-            if (isValid) {
-                // submit only if email is valid
-                $("#AdduserForm")[0].submit();
-            }
+        $("#email").on("blur", function () {
+            validateEmail();
         });
-    });
 
-    function validateEmail(callback) {
-        let email = $("#email").val().trim();
-        let errorField = $("#email-error");
-        let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        $("#AdduserForm").on("submit", function (e) {
+            e.preventDefault();
 
-        errorField.text("");
-
-        if (email === "") {
-            errorField.text("Email is required.");
-            if (callback) callback(false);
-            return false;
-        }
-
-        if (!emailRegex.test(email)) {
-            errorField.text("Enter a valid email address.");
-            if (callback) callback(false);
-            return false;
-        }
-
-        // AJAX check
-        $.ajax({
-            url: "{{ route('check_email_duplicate') }}",
-            method: "POST",
-            data: {
-                email: email,
-                _token: "{{ csrf_token() }}",
-                user_id: "{{ $user->id ?? '' }}"
-            },
-            success: function (response) {
-                if (response.exists) {
-                    errorField.text("This email is already registered.");
-                    if (callback) callback(false);
-                } else {
-                    errorField.text("");
-                    if (callback) callback(true);
+            validateEmail(function(isValid) {
+                if (isValid) {
+                    $("#AdduserForm")[0].submit();
                 }
-            },
-            error: function () {
-                errorField.text("Error checking email. Try again.");
+            });
+        });
+
+        function validateEmail(callback) {
+            let email = $("#email").val().trim();
+            let errorField = $("#email-error");
+            let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            errorField.text("");
+
+            if (email === "") {
+                errorField.text("Email is required.");
                 if (callback) callback(false);
+                return false;
+            }
+
+            if (!emailRegex.test(email)) {
+                errorField.text("Enter a valid email address.");
+                if (callback) callback(false);
+                return false;
+            }
+
+            $.ajax({
+                url: "{{ route('check_email_duplicate') }}",
+                method: "POST",
+                data: {
+                    email: email,
+                    _token: "{{ csrf_token() }}",
+                    user_id: "{{ $user->id ?? '' }}"
+                },
+                success: function (response) {
+                    if (response.exists) {
+                        errorField.text("This email is already registered.");
+                        if (callback) callback(false);
+                    } else {
+                        errorField.text("");
+                        if (callback) callback(true);
+                    }
+                },
+                error: function () {
+                    errorField.text("Error checking email. Try again.");
+                    if (callback) callback(false);
+                }
+            });
+        }
+
+    });
+    </script>
+    <script>
+    document.querySelectorAll('.toggle-password').forEach(function(element) {
+        element.addEventListener('click', function() {
+            let input = document.querySelector(this.getAttribute('toggle'));
+
+            if (input.type === "password") {
+                input.type = "text";
+                this.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+            } else {
+                input.type = "password";
+                this.innerHTML = '<i class="fa-solid fa-eye"></i>';
             }
         });
-    }
+    });
+    </script>
 
-});
-</script>
+
+
 
 
 

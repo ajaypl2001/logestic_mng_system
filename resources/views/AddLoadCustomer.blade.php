@@ -492,7 +492,11 @@
                                        </div>
                                        <div class="form_bbtns text-end">
                                           <input type="hidden" name="customer_id" value="{{ $isEdit ? $Customer->id : '' }}">
-                                          <input type="hidden" name="user_id" value="{{ Auth::user()->id}}">
+                                          @if (Auth::user()->userrole == 'Admin' || Auth::user()->userrole == 'Operations')
+                                             <input type="hidden" name="user_id" value="{{ $isEdit ? $Customer->user_id : Auth::user()->id }}">
+                                          @else
+                                             <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                                          @endif
                                           @if (!empty($Customer->id))
                                           <button type="submit" class="btn btn-primary text-white commonBtn rounded px-3">Update</button>
                                           @else

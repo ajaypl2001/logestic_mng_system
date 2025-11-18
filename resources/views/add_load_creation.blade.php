@@ -30,7 +30,11 @@
                            <div class="row">
                               <div class="col-md-12">
                                  <div class="row">
-                                    <input type="hidden" name="user_id" value="{{ Auth::user()->id}}">
+                                    @if (Auth::user()->userrole == 'Admin' || Auth::user()->userrole == 'Operations')
+                                             <input type="hidden" name="user_id" value="{{ $isEdit ? $load->user_id : Auth::user()->id }}">
+                                          @else
+                                             <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                                          @endif
                                     <div class="col-md-3">
                                        <div class="form-group mb-3">
                                           <label class="control-label mb-1">Load Number</label>

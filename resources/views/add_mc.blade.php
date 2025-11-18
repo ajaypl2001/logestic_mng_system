@@ -77,7 +77,11 @@
                               </div>
                               <div class="col-md-12 text-end">
                                  <input type="hidden" name="mc_id" value="{{ $isEdit ? $Mc_data->id : '' }}">
-                                 <input type="hidden" name="user_id" value="{{ Auth::user()->id}}">
+                                   @if (Auth::user()->userrole == 'Admin' || Auth::user()->userrole == 'Operations')
+                                       <input type="hidden" name="user_id" value="{{ $isEdit ? $Mc_data->user_id : Auth::user()->id }}">
+                                    @else
+                                       <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                                    @endif
                                  @if (!empty($Mc_data->id))
                                     <button type="submit" class="btn btn-success commonBtn">Update</button>
                                  @else

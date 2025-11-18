@@ -195,7 +195,13 @@
 
                            <div class="col-md-12 text-end">
                               <input type="hidden" name="shipper_id" value="{{ $isEdit ? $shipper->id : '' }}">
-                              <input type="hidden" name="user_id" value="{{ Auth::user()->id}}">
+                              
+                              @if (Auth::user()->userrole == 'Admin' || Auth::user()->userrole == 'Operations')
+                                 <input type="hidden" name="user_id" value="{{ $isEdit ? $shipper->user_id : Auth::user()->id }}">
+                              @else
+                                 <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                              @endif
+
                                @if (!empty($shipper->id))
                                     <button type="submit" class="btn btn-success  commonBtn"> Update </button>
                                  @else

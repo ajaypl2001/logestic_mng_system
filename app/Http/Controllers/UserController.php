@@ -85,12 +85,15 @@ class UserController extends Controller
             'old_password' => 'required',
             'new_password' => 'required|min:6',
             'confirm_password' => 'required|same:new_password',
+        ],
+        [
+            'confirm_password.same' => 'The confirm password field must match new password.',
         ]);
 
         $user = User::findOrFail($request->user_id);
 
         if ($request->old_password != $user->org_password) {
-            return redirect()->route('edit_user', base64_encode($request->user_id))->with('error', 'Old password does not match!');
+            return redirect()->back()->withErrors(['old_password' => 'Old password does not match!'])->withInput();
         }
 
         $user->password = Hash::make($request->new_password);

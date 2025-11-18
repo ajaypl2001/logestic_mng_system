@@ -32,6 +32,18 @@
 
     <!-- Theme Config js (Require in all Page) -->
     <script src="{{ asset('js/config.js')}}"></script>
+    <style>
+     .toggle-password {
+     position: absolute;
+     top: 38px;
+     right: 12px;
+     cursor: pointer;
+     z-index: 10;
+     }
+     .toggle-password i {
+     font-size: 14px;
+     }
+    </style>
 </head>
 
 <body>

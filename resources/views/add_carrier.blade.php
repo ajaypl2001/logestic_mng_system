@@ -670,7 +670,11 @@
                                        </div>
                                        <div class="form_bbtns text-end">
                                           <input type="hidden" name="carrier_id" value="{{ $isEdit ? $carrier_data->id : '' }}">
-                                          <input type="hidden" name="user_id" value="{{ Auth::user()->id}}">
+                                          @if (Auth::user()->userrole == 'Admin' || Auth::user()->userrole == 'Operations')
+                                             <input type="hidden" name="user_id" value="{{ $isEdit ? $carrier_data->user_id : Auth::user()->id }}">
+                                          @else
+                                             <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                                          @endif
                                           @if (!empty($carrier_data->id))
                                           <button id="btnSubmit" type="submit" class="btn btn-success commonBtn">Update</button>
                                           @else
